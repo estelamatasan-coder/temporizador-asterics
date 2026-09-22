@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Temporizador visual</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,sans-serif;background:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .app{width:min(900px,96vw);text-align:center;padding:24px}
+  h1{font-size:clamp(28px,5vw,48px);margin:0 0 18px}
+  .controls{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+  label{font-size:22px;font-weight:bold}
+  input{width:110px;font-size:28px;text-align:center;padding:8px;border:2px solid #333;border-radius:10px}
+  button{font-size:24px;font-weight:bold;padding:12px 22px;border:2px solid #333;border-radius:12px;background:white;cursor:pointer}
+  button:active{transform:scale(.98)}
+  .timer{position:relative;width:min(62vw,520px);aspect-ratio:1;margin:10px auto}
+  svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .bg{fill:none;stroke:#ddd;stroke-width:22}
+  .progress{fill:none;stroke-width:22;stroke-linecap:round;transition:stroke-dashoffset .2s linear}
+  .time{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:clamp(55px,12vw,105px);font-weight:bold}
+  #status{font-size:clamp(28px,5vw,48px);font-weight:bold;min-height:58px;margin-top:8px}
+  .hidden{display:none}
+  .finished .time{font-size:clamp(40px,8vw,80px)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <h1>Temporizador visual</h1>
+
+  <div class="controls" id="adultControls">
+    <label for="minutes">Minutos:</label>
+    <input id="minutes" type="number" min="0" max="999" step="1" value="5" inputmode="numeric">
+    <button id="start">▶️ INICIAR</button>
+    <button id="pause" disabled>⏸️ PAUSA</button>
+    <button id="reset">🔄 REINICIAR</button>
+  </div>
+
+  <div class="timer" id="timer">
+    <svg viewBox="0 0 200 200" aria-hidden="true">
+      <circle class="bg" cx="100" cy="100" r="82"></circle>
+      <circle class="progress" id="progress" cx="100" cy="100" r="82"></circle>
+    </svg>
+    <div class="time" id="display">05:00</div>
+  </div>
+
+  <div id="status"></div>
+</div>
+
+<script>
+const minutes = document.getElementById('minutes');
+const start = document.getElementById('start');
+const pause = document.getElementById('pause');
+const reset = document.getElementById('reset');
+const display = document.getElementById('display');
+const status = document.getElementById('status');
+const progress = document.getElementById('progress');
+const app = document.getElementById('app');
+
+const r = 82;
+const circumference = 2 * Math.PI * r;
+progress.style.strokeDasharray = circumference;
+progress.style.strokeDashoffset = 0;
+
+let total = 300;
+let remaining = 300;
+let running = false;
+let timerId = null;
+let endTime = 0;
+
+function fmt(sec){
+  sec = Math.max(0, Math.ceil(sec));
+  const m = Math.floor(sec/60);
+  const s = sec % 60;
+  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+function setDisplay(){
+  display.textContent = fmt(remaining);
+  const ratio = total > 0 ? remaining / total : 0;
+  progress.style.strokeDashoffset = circumference * (1-ratio);
+}
+function setTimeFromInput(){
+  const m = Math.max(0, Math.floor(Number(minutes.value) || 0));
+  total = m * 60;
+  remaining = total;
+  app.classList.remove('finished');
+  status.textContent = '';
+  setDisplay();
+}
+function finish(){
+  running = false;
+  clearInterval(timerId);
+  timerId = null;
+  remaining = 0;
+  setDisplay();
+  status.textContent = '¡TIEMPO TERMINADO!';
+  app.classList.add('finished');
+  start.disabled = false;
+  pause.disabled = true;
+
+  // Si Asterics abre esta página con ?return=URL, se puede volver automáticamente.
+  const params = new URLSearchParams(location.search);
+  const ret = params.get('return');
+  const seconds = Number(params.get('returnDelay') || 2);
+  if(ret){
+    setTimeout(() => { location.href = ret; }, Math.max(0, seconds*1000));
+  }
+}
+function tick(){
+  remaining = Math.max(0, (endTime - performance.now()) / 1000);
+  setDisplay();
+  if(remaining <= 0) finish();
+}
+start.addEventListener('click', ()=>{
+  if(total <= 0){ setTimeFromInput(); }
+  if(total <= 0) return;
+  if(!running){
+    if(remaining <= 0) remaining = total;
+    running = true;
+    status.textContent = '';
+    app.classList.remove('finished');
+    endTime = performance.now() + remaining*1000;
+    clearInterval(timerId);
+    timerId = setInterval(tick,100);
+    start.disabled = true;
+    pause.disabled = false;
+    minutes.disabled = true;
+  }
+});
+pause.addEventListener('click', ()=>{
+  if(!running) return;
+  tick();
+  running = false;
+  clearInterval(timerId);
+  timerId = null;
+  start.disabled = false;
+  pause.disabled = true;
+  minutes.disabled = false;
+});
+reset.addEventListener('click', ()=>{
+  clearInterval(timerId);
+  timerId = null;
+  running = false;
+  minutes.disabled = false;
+  start.disabled = false;
+  pause.disabled = true;
+  setTimeFromInput();
+});
+minutes.addEventListener('change', ()=>{
+  if(!running) setTimeFromInput();
+});
+setTimeFromInput();
+</script>
+</body>
+</html>
