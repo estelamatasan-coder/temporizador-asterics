@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Temporizador visual</title>
+<title>TEMPORIZADOR VISUAL</title>
 
 <style>
 
@@ -12,52 +12,52 @@
   box-sizing:border-box;
 }
 
-html,
-body{
+html,body{
   margin:0;
   width:100%;
-  min-height:100%;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#fff;
-  color:#102b5c;
+  height:100%;
+  overflow:hidden;
 }
 
 body{
-  min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#fff;
+  color:#102b5c;
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  overflow:hidden;
 }
 
 .app{
   width:min(1180px,96vw);
+  height:100vh;
   text-align:center;
-  padding:24px 14px 34px;
+  padding:18px 14px 20px;
 }
 
 h1{
-  margin:0 auto 24px;
+  margin:0 auto 18px;
   padding:10px 28px;
-  font-size:clamp(42px,6vw,72px);
+  font-size:clamp(34px,5.5vw,72px);
   font-weight:900;
   color:#102b5c;
   background:#dff1ff;
   border-radius:28px;
-  max-width:900px;
+  max-width:1000px;
+  text-transform:uppercase;
 }
 
 .controls{
   display:flex;
   justify-content:center;
   align-items:center;
-  gap:12px;
+  gap:10px;
   flex-wrap:wrap;
-  margin-bottom:8px;
+  margin-bottom:4px;
 }
 
 .minutes-label{
-  font-size:clamp(22px,3vw,30px);
+  font-size:clamp(20px,2.7vw,30px);
   font-weight:900;
 }
 
@@ -75,12 +75,12 @@ input{
 
 button{
   min-height:58px;
-  padding:10px 24px;
+  padding:10px 22px;
   border:3px solid #9bb1cf;
   border-radius:14px;
   background:#fff;
   color:#102b5c;
-  font-size:clamp(19px,2.4vw,28px);
+  font-size:clamp(18px,2.3vw,28px);
   font-weight:900;
   cursor:pointer;
   box-shadow:0 3px 8px rgba(0,0,0,.08);
@@ -104,15 +104,29 @@ button{
   border-color:#eda600;
 }
 
+#fullscreen{
+  display:block;
+  margin:2px auto 4px;
+  background:#6950e8;
+  color:#fff;
+  border-color:#5540c8;
+}
+
 button:hover{
   filter:brightness(.97);
 }
+
+
+/* =========================
+   CÍRCULO DEL TEMPORIZADOR
+   ========================= */
 
 .timer{
   position:relative;
   width:min(70vw,680px);
   aspect-ratio:1;
-  margin:10px auto 0;
+  margin:2px auto 0;
+  container-type:inline-size;
 }
 
 svg{
@@ -136,358 +150,497 @@ svg{
   transition:stroke-dashoffset .25s linear;
 }
 
+
+/* =========================
+   NÚMERO
+   ========================= */
+
 .time{
   position:absolute;
   inset:0;
   display:flex;
   justify-content:center;
   align-items:center;
-  padding-top:2px;
-  font-size:clamp(72px,12vw,148px);
+
+  padding:0 5%;
+
+  font-size:clamp(64px,16cqw,148px);
+
   font-weight:900;
   color:#102b5c;
-  letter-spacing:2px;
-  z-index:1;
+
+  letter-spacing:1px;
+  line-height:1;
+
+  z-index:2;
+
+  white-space:nowrap;
 }
 
-/* AVISO YA QUEDA POCO */
-
-.warning{
-  display:none;
-  margin:-15px auto 0;
-  position:relative;
-  z-index:4;
-  width:min(78%,560px);
-  padding:12px 22px;
-  background:#fff4d6;
-  border:5px solid #f28c00;
-  border-radius:22px;
-  color:#ed7200;
-  font-size:clamp(25px,4vw,48px);
-  font-weight:1000;
-  line-height:1.05;
-  box-shadow:
-    0 8px 25px rgba(0,0,0,.12),
-    0 0 18px rgba(242,140,0,.35);
-  pointer-events:none;
-}
 
 /*
-  Destello fuerte y llamativo.
-  El aviso cambia de tamaño, brillo y sombra.
+   PARPADEO DEL NÚMERO
+   Cuando quedan 30 segundos
 */
 
-.warning.show{
-  display:block;
+.time.warning-number{
   animation:
-    warningFlash .55s steps(2,end) infinite,
-    warningPulse .9s ease-in-out infinite alternate;
+    numberFlash .55s ease-in-out infinite alternate,
+    numberPulse .55s ease-in-out infinite alternate;
 }
+
+
+@keyframes numberFlash{
+
+  0%{
+    opacity:1;
+    text-shadow:
+      0 0 0 rgba(255,140,0,0);
+  }
+
+  50%{
+    opacity:.55;
+    text-shadow:
+      0 0 18px rgba(255,140,0,.8),
+      0 0 35px rgba(255,140,0,.55);
+  }
+
+  100%{
+    opacity:1;
+    text-shadow:
+      0 0 8px rgba(255,140,0,.9),
+      0 0 25px rgba(255,140,0,.7);
+  }
+
+}
+
+
+@keyframes numberPulse{
+
+  from{
+    transform:scale(1);
+  }
+
+  to{
+    transform:scale(1.09);
+  }
+
+}
+
+
+/* =========================
+   AVISO YA QUEDA POCO
+   ========================= */
+
+.warning{
+
+  display:none;
+
+  position:absolute;
+
+  left:50%;
+
+  /*
+     Lo colocamos claramente
+     DEBAJO del número
+  */
+
+  top:65%;
+
+  transform:translate(-50%,-50%);
+
+  z-index:5;
+
+  width:max-content;
+  max-width:90%;
+
+  padding:10px 22px;
+
+  background:#fff7dc;
+
+  border:5px solid #ff9800;
+
+  border-radius:22px;
+
+  color:#f07800;
+
+  font-size:clamp(22px,6cqw,48px);
+
+  font-weight:1000;
+
+  line-height:1;
+
+  box-shadow:
+    0 0 12px rgba(255,152,0,.55),
+    0 0 30px rgba(255,152,0,.35);
+
+  pointer-events:none;
+
+  white-space:nowrap;
+}
+
+
+.warning.show{
+
+  display:block;
+
+  animation:
+    warningFlash .55s ease-in-out infinite alternate,
+    warningMove .55s ease-in-out infinite alternate;
+
+}
+
 
 @keyframes warningFlash{
 
   0%{
+
     opacity:1;
-    filter:brightness(1);
+
+    background:#fff7dc;
+
+    color:#f07800;
+
+    border-color:#ff9800;
+
+    box-shadow:
+      0 0 8px rgba(255,152,0,.5),
+      0 0 15px rgba(255,152,0,.3);
+
   }
 
   50%{
-    opacity:.25;
-    filter:brightness(1.8);
+
+    opacity:.45;
+
+    background:#fff;
+
+    color:#ff5c00;
+
+    border-color:#ff6d00;
+
+    box-shadow:
+      0 0 25px rgba(255,110,0,.95),
+      0 0 50px rgba(255,110,0,.7);
+
   }
 
   100%{
+
     opacity:1;
-    filter:brightness(1);
+
+    background:#fff0cf;
+
+    color:#ff5c00;
+
+    border-color:#ff7200;
+
+    box-shadow:
+      0 0 15px rgba(255,110,0,.9),
+      0 0 35px rgba(255,110,0,.6);
+
   }
 
 }
 
-@keyframes warningPulse{
+
+@keyframes warningMove{
 
   from{
-    transform:scale(1);
-    box-shadow:
-      0 8px 25px rgba(0,0,0,.12),
-      0 0 15px rgba(242,140,0,.30);
+
+    transform:
+      translate(-50%,-50%)
+      scale(1);
+
   }
 
   to{
-    transform:scale(1.07);
-    box-shadow:
-      0 10px 30px rgba(0,0,0,.18),
-      0 0 35px rgba(242,140,0,.85);
+
+    transform:
+      translate(-50%,-50%)
+      scale(1.12);
+
   }
 
 }
 
-/*
-  Durante los últimos 30 segundos también
-  destella el número del temporizador.
-*/
 
-.time.warning-time{
-  animation:
-    timeFlash .55s steps(2,end) infinite,
-    timePulse .9s ease-in-out infinite alternate;
-}
-
-@keyframes timeFlash{
-
-  0%{
-    opacity:1;
-  }
-
-  50%{
-    opacity:.35;
-  }
-
-  100%{
-    opacity:1;
-  }
-
-}
-
-@keyframes timePulse{
-
-  from{
-    transform:scale(1);
-  }
-
-  to{
-    transform:scale(1.06);
-  }
-
-}
-
-.hint{
-  font-size:18px;
-  color:#60708a;
-  margin-top:16px;
-}
-
-
-/* PANTALLA FINAL */
+/* =========================
+   PANTALLA FINAL
+   ========================= */
 
 .finished{
+
   display:none;
+
   position:fixed;
+
   inset:0;
+
   z-index:20;
-  background:rgba(255,245,235,.98);
+
+  background:rgba(255,245,245,.98);
+
   align-items:center;
+
   justify-content:center;
+
   flex-direction:column;
+
   text-align:center;
+
   padding:25px;
-  animation:finishFlash .65s steps(2,end) infinite;
+
+  animation:
+    finishFlash .55s steps(2,end) infinite;
+
 }
+
 
 .finished.show{
   display:flex;
 }
 
+
 .finished-text{
+
   font-size:clamp(70px,13vw,180px);
+
   font-weight:1000;
+
   color:#e31313;
+
   text-transform:uppercase;
+
   margin:0 0 8px;
+
   line-height:1;
+
 }
+
 
 .finished-sub{
+
   font-size:clamp(27px,5vw,58px);
+
   font-weight:900;
+
   color:#17243a;
+
   margin-bottom:18px;
+
 }
+
 
 .finished-icon{
+
   font-size:clamp(100px,15vw,190px);
+
   line-height:1;
+
   margin-bottom:18px;
-  filter:drop-shadow(0 5px 2px rgba(0,0,0,.08));
+
 }
 
+
 .finished button{
+
   background:#ed1c24;
+
   color:#fff;
+
   border-color:#c90f16;
+
   font-size:clamp(21px,3vw,34px);
+
 }
+
 
 @keyframes finishFlash{
 
-  0%,49%{
+  0%,35%{
     opacity:1;
   }
 
   50%,100%{
-    opacity:.72;
+    opacity:.70;
   }
 
 }
 
 
-/* INDICADOR DE PANTALLA COMPLETA */
-
-.fullscreen-message{
-  display:none;
-  position:fixed;
-  left:50%;
-  bottom:25px;
-  transform:translateX(-50%);
-  z-index:50;
-  background:#102b5c;
-  color:#fff;
-  padding:12px 22px;
-  border-radius:14px;
-  font-size:20px;
-  font-weight:900;
-}
-
-.fullscreen-message.show{
-  display:block;
-}
-
+/* =========================
+   MÓVIL
+   ========================= */
 
 @media(max-width:650px){
 
   .app{
-    padding-top:15px;
+    padding-top:10px;
   }
 
   h1{
     border-radius:20px;
-    padding:9px 14px;
+    padding:8px 12px;
+    margin-bottom:10px;
   }
 
   .timer{
-    width:90vw;
+    width:88vw;
   }
 
   .controls{
-    gap:7px;
+    gap:6px;
   }
 
   button{
-    padding:8px 13px;
+    padding:8px 12px;
   }
 
   .warning{
-    margin:-10px auto 0;
+    top:66%;
   }
 
+}
+
+
+/* =========================
+   PANTALLA COMPLETA
+   ========================= */
+
+:fullscreen{
+  background:#fff;
 }
 
 </style>
 
 </head>
 
+
 <body>
+
 
 <div class="app">
 
-  <h1>TEMPORIZADOR VISUAL</h1>
 
-  <div class="controls">
-
-    <span class="minutes-label">Minutos:</span>
-
-    <input
-      id="minutes"
-      type="number"
-      min="1"
-      max="180"
-      value="5"
-    >
-
-    <button id="start">
-      ▶ INICIAR
-    </button>
-
-    <button id="pause">
-      Ⅱ PAUSA
-    </button>
-
-    <button id="reset">
-      ↻ REINICIAR
-    </button>
-
-  </div>
+<h1>
+TEMPORIZADOR VISUAL
+</h1>
 
 
-  <div class="timer">
+<div class="controls">
 
-    <svg viewBox="0 0 500 500" aria-hidden="true">
+<span class="minutes-label">
+Minutos:
+</span>
 
-      <defs>
+<input
+  id="minutes"
+  type="number"
+  min="1"
+  max="180"
+  value="5"
+>
 
-        <linearGradient
-          id="progressGradient"
-          x1="0%"
-          y1="0%"
-          x2="100%"
-          y2="100%"
-        >
+<button id="start">
+▶ INICIAR
+</button>
 
-          <stop
-            id="blueStop"
-            offset="0%"
-            stop-color="#087cff"
-          ></stop>
+<button id="pause">
+Ⅱ PAUSA
+</button>
 
-          <stop
-            id="redStop"
-            offset="100%"
-            stop-color="#ef1c2e"
-          ></stop>
-
-        </linearGradient>
-
-      </defs>
-
-      <circle
-        class="track"
-        cx="250"
-        cy="250"
-        r="200"
-      ></circle>
-
-      <circle
-        id="progress"
-        class="progress"
-        cx="250"
-        cy="250"
-        r="200"
-      ></circle>
-
-    </svg>
-
-
-    <div id="time" class="time">
-      05:00
-    </div>
-
-  </div>
-
-
-  <!-- EL AVISO AHORA ESTÁ DEBAJO DEL NÚMERO -->
-
-  <div id="warning" class="warning">
-    ¡YA QUEDA POCO!
-  </div>
-
-
-  <div class="hint">
-    El círculo empieza en azul y cambia progresivamente hacia rojo al acercarse el final.
-  </div>
+<button id="reset">
+↻ REINICIAR
+</button>
 
 </div>
 
 
-<!-- PANTALLA FINAL -->
+<button id="fullscreen">
+⛶ PANTALLA COMPLETA
+</button>
+
+
+
+<div class="timer">
+
+
+<svg
+  viewBox="0 0 500 500"
+  aria-hidden="true"
+>
+
+
+<defs>
+
+<linearGradient
+  id="progressGradient"
+  x1="0%"
+  y1="0%"
+  x2="100%"
+  y2="100%"
+>
+
+<stop
+  id="blueStop"
+  offset="0%"
+  stop-color="#087cff"
+></stop>
+
+<stop
+  id="redStop"
+  offset="100%"
+  stop-color="#ef1c2e"
+></stop>
+
+</linearGradient>
+
+</defs>
+
+
+<circle
+  class="track"
+  cx="250"
+  cy="250"
+  r="200"
+></circle>
+
+
+<circle
+  id="progress"
+  class="progress"
+  cx="250"
+  cy="250"
+  r="200"
+></circle>
+
+
+</svg>
+
+
+<div
+  id="time"
+  class="time"
+>
+05:00
+</div>
+
+
+<div
+  id="warning"
+  class="warning"
+>
+¡YA QUEDA POCO!
+</div>
+
+
+</div>
+
+
+</div>
+
+
 
 <div
   id="finished"
@@ -496,37 +649,37 @@ svg{
   aria-live="assertive"
 >
 
-  <div class="finished-text">
-    ¡SE ACABÓ!
-  </div>
 
-  <div class="finished-sub">
-    TIEMPO TERMINADO
-  </div>
-
-  <div
-    class="finished-icon"
-    aria-label="Chico indicando que se acabó"
-  >
-    🙅‍♂️
-  </div>
-
-  <button id="again">
-    ↻ VOLVER A EMPEZAR
-  </button>
-
+<div class="finished-text">
+¡SE ACABÓ!
 </div>
 
 
-<div
-  id="fullscreenMessage"
-  class="fullscreen-message"
->
-  Toca la pantalla para poner en pantalla completa
+<div class="finished-sub">
+TIEMPO TERMINADO
 </div>
+
+
+<div class="finished-icon">
+🙅‍♂️
+</div>
+
+
+<button id="again">
+↻ VOLVER A EMPEZAR
+</button>
+
+
+</div>
+
 
 
 <script>
+
+
+/* =========================
+   ELEMENTOS
+   ========================= */
 
 const minutesInput =
   document.getElementById('minutes');
@@ -555,9 +708,13 @@ const resetBtn =
 const againBtn =
   document.getElementById('again');
 
-const fullscreenMessage =
-  document.getElementById('fullscreenMessage');
+const fullscreenBtn =
+  document.getElementById('fullscreen');
 
+
+/* =========================
+   CONFIGURACIÓN
+   ========================= */
 
 const radius = 200;
 
@@ -565,145 +722,73 @@ const circumference =
   2 * Math.PI * radius;
 
 
-progress.style.strokeDasharray =
-  circumference;
-
-
-let totalSeconds = 300;
-
-let remaining = 300;
-
-let timer = null;
-
-let running = false;
-
-
 /*
-  NUEVA CONFIGURACIÓN
+   AQUÍ ESTÁ EL CAMBIO IMPORTANTE:
 
-  El aviso aparece cuando quedan
-  30 segundos.
+   El aviso aparece cuando quedan
+   30 segundos.
 */
 
 const WARNING_SECONDS = 30;
 
 
 /*
-  El sonido final dura exactamente
-  20 segundos.
+   El aviso final permanece
+   20 segundos mientras suena.
 */
 
 const FINISH_SOUND_SECONDS = 20;
 
 
-/*
-  ------------------------------------------------
-  PANTALLA COMPLETA
-  ------------------------------------------------
-*/
-
-async function requestFullscreen(){
-
-  try{
-
-    if(!document.fullscreenElement){
-
-      if(document.documentElement.requestFullscreen){
-
-        await document.documentElement.requestFullscreen();
-
-      }
-
-      else if(document.documentElement.webkitRequestFullscreen){
-
-        await document.documentElement.webkitRequestFullscreen();
-
-      }
-
-    }
-
-    fullscreenMessage.classList.remove('show');
-
-  }
-
-  catch(e){
-
-    /*
-      El navegador puede bloquear la pantalla
-      completa automática de una pestaña nueva.
-
-      En ese caso mostramos un pequeño aviso.
-    */
-
-    fullscreenMessage.classList.add('show');
-
-    setTimeout(()=>{
-
-      fullscreenMessage.classList.remove('show');
-
-    },4000);
-
-  }
-
-}
+progress.style.strokeDasharray =
+  circumference;
 
 
-/*
-  Intento automático al cargar.
+let totalSeconds = 0;
 
-  Si el navegador lo bloquea, el botón INICIAR
-  volverá a intentarlo aprovechando el clic.
-*/
+let remaining = 0;
 
-window.addEventListener('load',()=>{
+let timer = null;
 
-  setTimeout(()=>{
+let running = false;
 
-    requestFullscreen();
+let audioContext = null;
 
-  },300);
-
-});
+let finishReturnTimer = null;
 
 
-/*
-  También aprovechamos cualquier primer toque/clic
-  del usuario para solicitar pantalla completa.
-*/
 
-document.addEventListener(
-  'pointerdown',
-  ()=>{
-    requestFullscreen();
-  },
-  {once:true}
-);
+/* =========================
+   FORMATO DEL TIEMPO
+   ========================= */
 
-
-/*
-  ------------------------------------------------
-  FORMATO DEL TIEMPO
-  ------------------------------------------------
-*/
-
-function formatTime(s){
+function formatTime(seconds){
 
   return (
-    String(Math.floor(s / 60)).padStart(2,'0')
+
+    String(
+      Math.floor(seconds / 60)
+    ).padStart(2,'0')
+
     +
+
     ':'
+
     +
-    String(s % 60).padStart(2,'0')
+
+    String(
+      seconds % 60
+    ).padStart(2,'0')
+
   );
 
 }
 
 
-/*
-  ------------------------------------------------
-  ACTUALIZAR PANTALLA
-  ------------------------------------------------
-*/
+
+/* =========================
+   ACTUALIZAR PANTALLA
+   ========================= */
 
 function updateDisplay(){
 
@@ -722,7 +807,8 @@ function updateDisplay(){
 
 
   /*
-    AVISO A LOS 30 SEGUNDOS
+     YA QUEDA POCO
+     desde 30 segundos
   */
 
   const showWarning =
@@ -738,23 +824,21 @@ function updateDisplay(){
 
 
   /*
-    El número también destella
-    durante los últimos 30 segundos.
+     El número también parpadea
   */
 
   timeEl.classList.toggle(
-    'warning-time',
+    'warning-number',
     showWarning
   );
 
 }
 
 
-/*
-  ------------------------------------------------
-  ESTABLECER DURACIÓN
-  ------------------------------------------------
-*/
+
+/* =========================
+   DURACIÓN
+   ========================= */
 
 function setDuration(){
 
@@ -765,7 +849,10 @@ function setDuration(){
     );
 
 
-  if(!Number.isFinite(m) || m < 1){
+  if(
+    !Number.isFinite(m) ||
+    m < 1
+  ){
 
     m = 1;
 
@@ -795,133 +882,106 @@ function setDuration(){
 }
 
 
-/*
-  ------------------------------------------------
-  AVISO SONORO FINAL
-  ------------------------------------------------
 
-  Dura 20 segundos.
-
-  Se hacen pulsos sonoros llamativos,
-  pero sin mantener un tono continuo.
-*/
+/* =========================
+   AVISO SONORO FINAL
+   20 SEGUNDOS
+   ========================= */
 
 function beep(){
 
-  return new Promise((resolve)=>{
+  try{
 
-    try{
-
-      const AudioContext =
+    audioContext =
+      new (
         window.AudioContext ||
-        window.webkitAudioContext;
+        window.webkitAudioContext
+      )();
 
 
-      if(!AudioContext){
-
-        setTimeout(
-          resolve,
-          FINISH_SOUND_SECONDS * 1000
-        );
-
-        return;
-
-      }
+    const ctx =
+      audioContext;
 
 
-      const ctx =
-        new AudioContext();
+    const now =
+      ctx.currentTime;
 
 
-      if(ctx.state === 'suspended'){
+    /*
+       Sonidos durante 20 segundos.
+    */
 
-        ctx.resume().catch(()=>{});
+    for(
+      let d = 0, i = 0;
+      d < FINISH_SOUND_SECONDS;
+      d += .8, i++
+    ){
 
-      }
-
-
-      const now =
-        ctx.currentTime;
-
-
-      /*
-        Pulsos durante 20 segundos.
-      */
-
-      for(
-        let d = 0,
-        i = 0;
-
-        d < FINISH_SOUND_SECONDS;
-
-        d += 0.65,
-        i++
-      ){
-
-        const oscillator =
-          ctx.createOscillator();
+      const oscillator =
+        ctx.createOscillator();
 
 
-        const gain =
-          ctx.createGain();
-
-
-        /*
-          Alternamos dos frecuencias
-          para que el aviso sea reconocible.
-        */
-
-        oscillator.frequency.value =
-          i % 2
-            ? 880
-            : 660;
-
-
-        oscillator.type =
-          'sine';
-
-
-        gain.gain.setValueAtTime(
-          0.0001,
-          now + d
-        );
-
-
-        gain.gain.exponentialRampToValueAtTime(
-          0.35,
-          now + d + 0.04
-        );
-
-
-        gain.gain.exponentialRampToValueAtTime(
-          0.0001,
-          now + d + 0.38
-        );
-
-
-        oscillator
-          .connect(gain)
-          .connect(ctx.destination);
-
-
-        oscillator.start(
-          now + d
-        );
-
-
-        oscillator.stop(
-          now + d + 0.42
-        );
-
-      }
+      const gain =
+        ctx.createGain();
 
 
       /*
-        Cerramos el audio exactamente
-        después de 20 segundos.
+         Dos tonos alternos
+         para que sea llamativo.
       */
 
-      setTimeout(()=>{
+      oscillator.frequency.value =
+        i % 2
+          ? 880
+          : 660;
+
+
+      oscillator.type =
+        'sine';
+
+
+      gain.gain.setValueAtTime(
+        .0001,
+        now + d
+      );
+
+
+      gain.gain.exponentialRampToValueAtTime(
+        .32,
+        now + d + .04
+      );
+
+
+      gain.gain.exponentialRampToValueAtTime(
+        .0001,
+        now + d + .42
+      );
+
+
+      oscillator
+        .connect(gain)
+        .connect(ctx.destination);
+
+
+      oscillator.start(
+        now + d
+      );
+
+
+      oscillator.stop(
+        now + d + .46
+      );
+
+    }
+
+
+    /*
+       Cerramos el audio
+       después de 20 segundos.
+    */
+
+    setTimeout(
+      () => {
 
         try{
 
@@ -929,112 +989,77 @@ function beep(){
 
         }catch(e){}
 
+      },
+      FINISH_SOUND_SECONDS * 1000
+    );
 
-        resolve();
 
-      }, FINISH_SOUND_SECONDS * 1000);
+  }catch(e){
 
+    console.log(
+      'No se pudo iniciar el sonido',
+      e
+    );
 
-    }
-
-    catch(e){
-
-      /*
-        Si el navegador no permite audio,
-        esperamos igualmente 20 segundos
-        antes de volver al comunicador.
-      */
-
-      setTimeout(
-        resolve,
-        FINISH_SOUND_SECONDS * 1000
-      );
-
-    }
-
-  });
+  }
 
 }
 
 
-/*
-  ------------------------------------------------
-  VOLVER AL COMUNICADOR
-  ------------------------------------------------
-*/
+
+/* =========================
+   VOLVER AL COMUNICADOR
+   ========================= */
 
 function returnToCommunicator(){
 
   /*
-    Primero intentamos cerrar la pestaña.
+     Primero intentamos cerrar
+     esta pestaña.
 
-    Esto funciona si la pestaña fue abierta
-    mediante window.open.
+     Si el navegador permite cerrar
+     la pestaña abierta desde el
+     comunicador, volverá directamente
+     al comunicador.
   */
 
   try{
 
-    if(window.opener){
-
-      window.opener.focus();
-
-      window.close();
-
-    }
+    window.close();
 
   }catch(e){}
 
 
   /*
-    Si el navegador no permite cerrar la pestaña,
-    utilizamos la página desde la que se llegó
-    al temporizador.
+     Si no puede cerrarse,
+     intentamos volver atrás.
   */
 
-  setTimeout(()=>{
-
-    if(document.referrer){
-
-      try{
-
-        window.location.href =
-          document.referrer;
-
-        return;
-
-      }catch(e){}
-
-    }
-
-
-    /*
-      Último recurso:
-      volver atrás.
-    */
+  setTimeout(() => {
 
     try{
 
-      window.history.back();
+      if(
+        window.history.length > 1
+      ){
+
+        window.history.back();
+
+      }
 
     }catch(e){}
 
-  },300);
+  },500);
 
 }
 
 
-/*
-  ------------------------------------------------
-  FINAL DEL TEMPORIZADOR
-  ------------------------------------------------
-*/
 
-async function finish(){
+/* =========================
+   FINAL DEL TEMPORIZADOR
+   ========================= */
 
-  warning.classList.remove('show');
-
-  timeEl.classList.remove('warning-time');
-
+function finish(){
 
   clearInterval(timer);
 
@@ -1045,50 +1070,66 @@ async function finish(){
   remaining = 0;
 
 
+  warning.classList.remove(
+    'show'
+  );
+
+
+  timeEl.classList.remove(
+    'warning-number'
+  );
+
+
   updateDisplay();
 
 
   /*
-    Mostramos inmediatamente
-    la pantalla de finalización.
+     Aparece la pantalla final.
   */
 
-  finished.classList.add('show');
+  finished.classList.add(
+    'show'
+  );
 
 
   /*
-    El aviso sonoro empieza ahora
-    y dura 20 segundos.
+     Empieza el aviso sonoro.
   */
 
-  await beep();
+  beep();
 
 
   /*
-    SOLO después de terminar el sonido
-    volvemos al comunicador.
+     EXACTAMENTE 20 SEGUNDOS
+     DESPUÉS:
+
+     volver al comunicador.
   */
 
-  returnToCommunicator();
+  clearTimeout(
+    finishReturnTimer
+  );
+
+
+  finishReturnTimer =
+    setTimeout(
+      () => {
+
+        returnToCommunicator();
+
+      },
+      FINISH_SOUND_SECONDS * 1000
+    );
 
 }
 
 
-/*
-  ------------------------------------------------
-  INICIAR
-  ------------------------------------------------
-*/
 
-startBtn.onclick = ()=>{
+/* =========================
+   INICIAR
+   ========================= */
 
-  /*
-    Aprovechamos el clic del usuario para
-    solicitar pantalla completa.
-  */
-
-  requestFullscreen();
-
+startBtn.onclick = () => {
 
   if(running){
 
@@ -1096,6 +1137,11 @@ startBtn.onclick = ()=>{
 
   }
 
+
+  /*
+     Si estaba a cero,
+     comenzamos una nueva cuenta.
+  */
 
   if(remaining <= 0){
 
@@ -1110,31 +1156,32 @@ startBtn.onclick = ()=>{
   updateDisplay();
 
 
-  timer = setInterval(()=>{
+  timer =
+    setInterval(() => {
 
-    remaining--;
-
-    updateDisplay();
+      remaining--;
 
 
-    if(remaining <= 0){
+      updateDisplay();
 
-      finish();
 
-    }
+      if(remaining <= 0){
 
-  },1000);
+        finish();
+
+      }
+
+    },1000);
 
 };
 
 
-/*
-  ------------------------------------------------
-  PAUSA
-  ------------------------------------------------
-*/
 
-pauseBtn.onclick = ()=>{
+/* =========================
+   PAUSA
+   ========================= */
+
+pauseBtn.onclick = () => {
 
   if(!running){
 
@@ -1150,28 +1197,35 @@ pauseBtn.onclick = ()=>{
   running = false;
 
 
-  warning.classList.remove('show');
+  warning.classList.remove(
+    'show'
+  );
+
 
   timeEl.classList.remove(
-    'warning-time'
+    'warning-number'
   );
 
 };
 
 
-/*
-  ------------------------------------------------
-  REINICIAR
-  ------------------------------------------------
-*/
 
-resetBtn.onclick = ()=>{
+/* =========================
+   REINICIAR
+   ========================= */
+
+resetBtn.onclick = () => {
 
   clearInterval(timer);
 
   timer = null;
 
   running = false;
+
+
+  clearTimeout(
+    finishReturnTimer
+  );
 
 
   finished.classList.remove(
@@ -1185,7 +1239,7 @@ resetBtn.onclick = ()=>{
 
 
   timeEl.classList.remove(
-    'warning-time'
+    'warning-number'
   );
 
 
@@ -1194,13 +1248,17 @@ resetBtn.onclick = ()=>{
 };
 
 
-/*
-  ------------------------------------------------
-  VOLVER A EMPEZAR
-  ------------------------------------------------
-*/
 
-againBtn.onclick = ()=>{
+/* =========================
+   VOLVER A EMPEZAR
+   ========================= */
+
+againBtn.onclick = () => {
+
+  clearTimeout(
+    finishReturnTimer
+  );
+
 
   finished.classList.remove(
     'show'
@@ -1210,38 +1268,169 @@ againBtn.onclick = ()=>{
   setDuration();
 
 
-  requestFullscreen();
-
-
   startBtn.click();
 
 };
 
 
-/*
-  ------------------------------------------------
-  CAMBIO DE MINUTOS
-  ------------------------------------------------
-*/
 
-minutesInput.onchange = ()=>{
+/* =========================
+   CAMBIO DE MINUTOS
+   ========================= */
 
-  if(!running){
+minutesInput.addEventListener(
+  'input',
+  () => {
 
-    setDuration();
+    if(!running){
+
+      setDuration();
+
+    }
+
+  }
+);
+
+
+minutesInput.addEventListener(
+  'change',
+  () => {
+
+    if(!running){
+
+      setDuration();
+
+    }
+
+  }
+);
+
+
+
+/* =========================
+   PANTALLA COMPLETA
+   ========================= */
+
+async function enterFullscreen(){
+
+  try{
+
+    if(
+      !document.fullscreenElement
+    ){
+
+      await document
+        .documentElement
+        .requestFullscreen();
+
+
+      fullscreenBtn.textContent =
+        '⛶ SALIR DE PANTALLA COMPLETA';
+
+    }
+
+  }catch(e){
+
+    /*
+       Algunos navegadores bloquean
+       la pantalla completa automática
+       cuando la página se abre desde
+       otra pestaña.
+    */
+
+    console.log(
+      'El navegador ha bloqueado la pantalla completa automática.'
+    );
 
   }
 
-};
+}
+
+
+
+fullscreenBtn.onclick =
+  async () => {
+
+    try{
+
+      if(
+        !document.fullscreenElement
+      ){
+
+        await document
+          .documentElement
+          .requestFullscreen();
+
+
+      }else{
+
+        await document
+          .exitFullscreen();
+
+      }
+
+    }catch(e){}
+
+  };
+
 
 
 /*
-  ------------------------------------------------
-  INICIALIZACIÓN
-  ------------------------------------------------
+   Actualizar el texto del botón
+   cuando cambia el estado.
+*/
+
+document.addEventListener(
+  'fullscreenchange',
+  () => {
+
+    fullscreenBtn.textContent =
+      document.fullscreenElement
+
+        ? '⛶ SALIR DE PANTALLA COMPLETA'
+
+        : '⛶ PANTALLA COMPLETA';
+
+  }
+);
+
+
+
+/*
+   Intento automático de pantalla completa.
+
+   IMPORTANTE:
+   Chrome/Edge pueden bloquearlo al
+   abrir una pestaña nueva sin una
+   acción directa del usuario.
+*/
+
+window.addEventListener(
+  'load',
+  () => {
+
+    setDuration();
+
+
+    setTimeout(
+      () => {
+
+        enterFullscreen();
+
+      },
+      300
+    );
+
+  }
+);
+
+
+/*
+   Estado inicial
 */
 
 setDuration();
+
 
 </script>
 
