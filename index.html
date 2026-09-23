@@ -15,101 +15,98 @@ html,body{
   width:100%;
   height:100%;
   overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#ffffff;
 }
 
 body{
-  font-family:Arial,Helvetica,sans-serif;
-  background:#fff;
-  color:#102b5c;
   display:flex;
   justify-content:center;
+  align-items:center;
 }
 
 .app{
-  width:min(1180px,96vw);
-  height:100vh;
-  text-align:center;
-  padding:18px 14px;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding-top:5vh;
 }
 
-h1{
-  margin:0 auto 18px;
-  padding:10px 28px;
-  font-size:clamp(34px,5.5vw,72px);
+.title{
+  background:#dff1f5;
+  border-radius:18px;
+  padding:18px 45px;
+  text-align:center;
+  font-size:clamp(28px,4vw,52px);
   font-weight:900;
-  color:#102b5c;
-  background:#dff1ff;
-  border-radius:28px;
-  max-width:1000px;
+  color:#263b68;
+  line-height:1.15;
+  margin-bottom:20px;
 }
 
 .controls{
   display:flex;
-  justify-content:center;
   align-items:center;
-  gap:10px;
+  justify-content:center;
   flex-wrap:wrap;
+  gap:10px;
+  margin-bottom:10px;
 }
 
 .minutes-label{
-  font-size:clamp(20px,2.7vw,30px);
-  font-weight:900;
+  font-size:20px;
+  font-weight:bold;
+  color:#333;
 }
 
-input{
-  width:105px;
-  height:58px;
-  border:3px solid #9bb1cf;
-  border-radius:14px;
-  font-size:29px;
+#minutesInput{
+  width:60px;
+  height:38px;
+  font-size:20px;
   text-align:center;
-  color:#102b5c;
-  font-weight:800;
+  border:1px solid #aaa;
+  border-radius:6px;
 }
 
 button{
-  min-height:58px;
-  padding:10px 22px;
-  border:3px solid #9bb1cf;
-  border-radius:14px;
-  background:#fff;
-  color:#102b5c;
-  font-size:clamp(18px,2.3vw,28px);
-  font-weight:900;
+  border:0;
+  border-radius:8px;
+  padding:10px 17px;
+  font-size:17px;
+  font-weight:bold;
   cursor:pointer;
+  color:white;
 }
 
-#start{
-  background:#20b36b;
-  color:#fff;
-  border-color:#159355;
+#startBtn{
+  background:#32b653;
 }
 
-#pause{
-  background:#248cff;
-  color:#fff;
-  border-color:#1475df;
+#pauseBtn{
+  background:#3979d8;
 }
 
-#reset{
-  background:#ffbf27;
-  border-color:#eda600;
+#resetBtn{
+  background:#e7a72e;
 }
 
-#fullscreen{
-  display:block;
-  margin:6px auto;
-  background:#6950e8;
-  color:#fff;
-  border-color:#5540c8;
+#fullscreenBtn{
+  background:#6248d8;
+  margin-bottom:10px;
 }
 
-.timer{
+button:active{
+  transform:scale(.97);
+}
+
+.timerArea{
   position:relative;
-  width:min(70vw,680px);
-  aspect-ratio:1;
-  margin:2px auto;
-  container-type:inline-size;
+  width:min(58vh,58vw,470px);
+  height:min(58vh,58vw,470px);
+  margin-top:5px;
 }
 
 svg{
@@ -118,67 +115,55 @@ svg{
   transform:rotate(-90deg);
 }
 
-.track{
+.circle-bg{
   fill:none;
-  stroke:#e1e4e8;
-  stroke-width:58;
+  stroke:#e2e5e8;
+  stroke-width:14;
 }
 
-.progress{
+.circle-progress{
   fill:none;
-  stroke:url(#progressGradient);
-  stroke-width:58;
+  stroke:url(#timerGradient);
+  stroke-width:14;
   stroke-linecap:round;
-  transition:stroke-dashoffset .2s linear;
+  transition:stroke-dashoffset .3s linear;
 }
 
-.time{
+.timerContent{
   position:absolute;
   inset:0;
   display:flex;
-  justify-content:center;
+  flex-direction:column;
   align-items:center;
-  font-size:clamp(64px,16cqw,148px);
-  font-weight:900;
-  color:#102b5c;
-  line-height:1;
-  z-index:1;
+  justify-content:center;
+  pointer-events:none;
 }
 
-.warning{
-  display:none;
-  position:absolute;
-  left:0;
-  right:0;
-  top:58%;
-  transform:translateY(-50%);
-  z-index:4;
-  color:#e31313;
-  font-size:clamp(22px,6cqw,48px);
-  font-weight:1000;
+.time{
+  font-size:clamp(55px,9vw,100px);
+  font-weight:900;
+  color:#334d80;
+  line-height:1;
   white-space:nowrap;
 }
 
-.warning.show{
-  display:block;
-  animation:pulse .9s ease-in-out infinite alternate;
-}
-
-@keyframes pulse{
-  to{
-    transform:translateY(-50%) scale(1.035);
-  }
+.warning{
+  margin-top:12px;
+  font-size:clamp(20px,3vw,34px);
+  font-weight:900;
+  color:#f28c28;
+  text-align:center;
+  line-height:1.1;
+  min-height:38px;
 }
 
 .finished{
   display:none;
-  position:fixed;
+  position:absolute;
   inset:0;
-  z-index:20;
-  background:rgba(255,245,245,.98);
+  flex-direction:column;
   align-items:center;
   justify-content:center;
-  flex-direction:column;
   text-align:center;
 }
 
@@ -186,48 +171,61 @@ svg{
   display:flex;
 }
 
-.finished-text{
-  font-size:clamp(70px,13vw,180px);
-  font-weight:1000;
-  color:#e31313;
-  margin-bottom:8px;
-}
-
-.finished-sub{
-  font-size:clamp(27px,5vw,58px);
+.finishedText{
+  font-size:clamp(34px,6vw,65px);
   font-weight:900;
-  margin-bottom:18px;
+  color:#d93636;
+  line-height:1.1;
+  margin-bottom:15px;
 }
 
-.finished-icon{
-  font-size:clamp(100px,15vw,190px);
-  margin-bottom:18px;
+.finishedSubtext{
+  font-size:clamp(20px,3vw,32px);
+  font-weight:bold;
+  color:#555;
 }
 
-.finished button{
-  background:#ed1c24;
-  color:#fff;
-  border-color:#c90f16;
+/* Estado final */
+.timerArea.alarm .circle-progress{
+  stroke:#e53935;
+  animation:pulse 0.8s infinite alternate;
 }
 
-@media(max-width:650px){
+.timerArea.alarm .time{
+  color:#d93636;
+}
 
+@keyframes pulse{
+  from{
+    opacity:.55;
+  }
+  to{
+    opacity:1;
+  }
+}
+
+@media(max-width:600px){
   .app{
-    padding-top:10px;
+    padding-top:3vh;
   }
 
-  h1{
-    border-radius:20px;
-    padding:8px 12px;
-    margin-bottom:10px;
+  .title{
+    padding:12px 25px;
+    margin-bottom:12px;
   }
 
-  .timer{
-    width:88vw;
+  .controls{
+    gap:6px;
   }
 
   button{
-    padding:8px 12px;
+    font-size:14px;
+    padding:8px 11px;
+  }
+
+  .timerArea{
+    width:min(72vw,65vh);
+    height:min(72vw,65vh);
   }
 }
 </style>
@@ -237,505 +235,595 @@ svg{
 
 <div class="app">
 
-<h1>TEMPORIZADOR VISUAL</h1>
+  <div class="title">
+    TEMPORIZADOR<br>
+    VISUAL
+  </div>
 
-<div class="controls">
+  <div class="controls">
 
-<span class="minutes-label">Minutos:</span>
+    <span class="minutes-label">Minutos:</span>
 
-<input
-  id="minutes"
-  type="number"
-  min="1"
-  max="180"
-  value="5"
->
+    <input
+      id="minutesInput"
+      type="number"
+      min="1"
+      max="180"
+      value="1"
+    >
 
-<button id="start">
-▶ INICIAR
-</button>
+    <button id="startBtn">
+      ▶ INICIAR
+    </button>
 
-<button id="pause">
-Ⅱ PAUSA
-</button>
+    <button id="pauseBtn">
+      ⏸ PAUSA
+    </button>
 
-<button id="reset">
-↻ REINICIAR
-</button>
+    <button id="resetBtn">
+      ↻ REINICIAR
+    </button>
 
-</div>
+  </div>
 
-<button id="fullscreen">
-⛶ PANTALLA COMPLETA
-</button>
+  <button id="fullscreenBtn">
+    ⛶ PANTALLA COMPLETA
+  </button>
 
+  <div class="timerArea" id="timerArea">
 
-<div class="timer">
+    <svg viewBox="0 0 200 200">
 
-<svg viewBox="0 0 500 500">
+      <defs>
+        <linearGradient
+          id="timerGradient"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="100%"
+        >
+          <stop offset="0%" stop-color="#1877e8"/>
+          <stop offset="100%" stop-color="#ef2d55"/>
+        </linearGradient>
+      </defs>
 
-<defs>
+      <circle
+        class="circle-bg"
+        cx="100"
+        cy="100"
+        r="82"
+      />
 
-<linearGradient
-  id="progressGradient"
-  x1="0%"
-  y1="0%"
-  x2="100%"
-  y2="100%"
->
+      <circle
+        id="progressCircle"
+        class="circle-progress"
+        cx="100"
+        cy="100"
+        r="82"
+      />
 
-<stop
-  offset="0%"
-  stop-color="#087cff"
-></stop>
+    </svg>
 
-<stop
-  offset="100%"
-  stop-color="#ef1c2e"
-></stop>
+    <div class="timerContent" id="timerContent">
 
-</linearGradient>
+      <div
+        id="timeDisplay"
+        class="time"
+      >
+        01:00
+      </div>
 
-</defs>
+      <div
+        id="warning"
+        class="warning"
+      ></div>
 
-<circle
-  class="track"
-  cx="250"
-  cy="250"
-  r="200"
-></circle>
+    </div>
 
-<circle
-  id="progress"
-  class="progress"
-  cx="250"
-  cy="250"
-  r="200"
-></circle>
+    <div
+      id="finished"
+      class="finished"
+    >
 
-</svg>
+      <div class="finishedText">
+        ¡TIEMPO TERMINADO!
+      </div>
 
-<div id="time" class="time">
-05:00
-</div>
+      <div class="finishedSubtext">
+        Volviendo al comunicador...
+      </div>
 
-<div id="warning" class="warning">
-¡YA QUEDA POCO!
-</div>
+    </div>
 
-</div>
-
-</div>
-
-
-<div
-  id="finished"
-  class="finished"
-  role="alert"
-  aria-live="assertive"
->
-
-<div class="finished-text">
-¡SE ACABÓ!
-</div>
-
-<div class="finished-sub">
-TIEMPO TERMINADO
-</div>
-
-<div class="finished-icon">
-🙅‍♂️
-</div>
-
-<button id="again">
-↻ VOLVER A EMPEZAR
-</button>
+  </div>
 
 </div>
 
 
 <script>
 
-"use strict";
+const minutesInput = document.getElementById("minutesInput");
+const startBtn = document.getElementById("startBtn");
+const pauseBtn = document.getElementById("pauseBtn");
+const resetBtn = document.getElementById("resetBtn");
+const fullscreenBtn = document.getElementById("fullscreenBtn");
 
-
-const minutes = document.getElementById("minutes");
-const time = document.getElementById("time");
-const progress = document.getElementById("progress");
+const timeDisplay = document.getElementById("timeDisplay");
 const warning = document.getElementById("warning");
+const progressCircle = document.getElementById("progressCircle");
+const timerArea = document.getElementById("timerArea");
+const timerContent = document.getElementById("timerContent");
 const finished = document.getElementById("finished");
 
-const start = document.getElementById("start");
-const pause = document.getElementById("pause");
-const reset = document.getElementById("reset");
-const again = document.getElementById("again");
-const fullscreen = document.getElementById("fullscreen");
+const radius = 82;
+const circumference = 2 * Math.PI * radius;
 
+progressCircle.style.strokeDasharray = circumference;
+progressCircle.style.strokeDashoffset = 0;
 
-const circumference = 2 * Math.PI * 200;
-
-progress.style.strokeDasharray = circumference;
-progress.style.strokeDashoffset = 0;
-
-
-let total = 300;
-let remaining = 300;
-let running = false;
+let totalSeconds = 60;
+let remaining = 60;
 let timer = null;
-let end = 0;
-let audio = null;
+let running = false;
+let alarmTimeout = null;
+let audioContext = null;
 
 
-function format(seconds){
-
-  seconds = Math.max(0, Math.floor(seconds));
-
-  const mins = String(
-    Math.floor(seconds / 60)
-  ).padStart(2,"0");
-
-  const secs = String(
-    seconds % 60
-  ).padStart(2,"0");
-
-  return mins + ":" + secs;
-}
-
-
-function display(){
-
-  time.textContent = format(remaining);
-
-  const ratio =
-    total > 0
-    ? remaining / total
-    : 0;
-
-  progress.style.strokeDashoffset =
-    circumference * (1 - ratio);
-
-  warning.classList.toggle(
-    "show",
-    running &&
-    remaining > 0 &&
-    remaining <= 20
-  );
-}
-
+/* --------------------------------------------------
+   DURACIÓN
+-------------------------------------------------- */
 
 function setDuration(){
 
-  let m = parseInt(
-    minutes.value,
-    10
-  );
+  let minutes = parseInt(minutesInput.value,10);
 
-  if(!Number.isFinite(m) || m < 1){
-    m = 1;
+  if(isNaN(minutes) || minutes < 1){
+    minutes = 1;
+    minutesInput.value = 1;
   }
 
-  if(m > 180){
-    m = 180;
+  if(minutes > 180){
+    minutes = 180;
+    minutesInput.value = 180;
   }
 
-  minutes.value = m;
+  totalSeconds = minutes * 60;
+  remaining = totalSeconds;
 
-  total = m * 60;
-
-  remaining = total;
-
-  display();
+  updateDisplay();
 }
 
 
-function prepareAudio(){
+/* --------------------------------------------------
+   FORMATO DEL TIEMPO
+-------------------------------------------------- */
 
-  try{
+function formatTime(seconds){
 
-    if(!audio){
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
 
-      audio =
-        new (
-          window.AudioContext ||
-          window.webkitAudioContext
-        )();
-
-    }
-
-    if(audio.state === "suspended"){
-      audio.resume();
-    }
-
-  }catch(e){}
+  return String(mins).padStart(2,"0")
+       + ":"
+       + String(secs).padStart(2,"0");
 }
 
+
+/* --------------------------------------------------
+   ACTUALIZAR PANTALLA
+-------------------------------------------------- */
+
+function updateDisplay(){
+
+  timeDisplay.textContent = formatTime(remaining);
+
+  let progress = remaining / totalSeconds;
+
+  if(progress < 0){
+    progress = 0;
+  }
+
+  const offset = circumference * (1 - progress);
+
+  progressCircle.style.strokeDashoffset = offset;
+
+  /*
+     AVISO NARANJA:
+     aparece cuando quedan 20 segundos o menos
+     y queda DEBAJO del número.
+  */
+
+  if(
+    remaining > 0 &&
+    remaining <= 20 &&
+    running
+  ){
+
+    warning.textContent = "¡YA QUEDA POCO!";
+
+  }else{
+
+    warning.textContent = "";
+
+  }
+}
+
+
+/* --------------------------------------------------
+   SONIDO
+   DURA EXACTAMENTE 20 SEGUNDOS
+-------------------------------------------------- */
 
 function beep(){
 
   try{
 
-    prepareAudio();
+    if(!audioContext){
 
-    if(!audio){
-      return;
+      audioContext =
+        new (window.AudioContext ||
+             window.webkitAudioContext)();
+
     }
 
-    const now = audio.currentTime;
-
-    for(let i = 0; i < 10; i++){
-
-      const oscillator =
-        audio.createOscillator();
-
-      const gain =
-        audio.createGain();
-
-      const delay = i * 0.45;
-
-      oscillator.frequency.value =
-        i % 2 ? 880 : 660;
-
-      oscillator.type = "sine";
-
-      gain.gain.setValueAtTime(
-        0.0001,
-        now + delay
-      );
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.32,
-        now + delay + 0.04
-      );
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + delay + 0.35
-      );
-
-      oscillator
-        .connect(gain)
-        .connect(audio.destination);
-
-      oscillator.start(
-        now + delay
-      );
-
-      oscillator.stop(
-        now + delay + 0.38
-      );
+    if(audioContext.state === "suspended"){
+      audioContext.resume();
     }
 
-  }catch(e){}
-}
+    const oscillator =
+      audioContext.createOscillator();
 
+    const gain =
+      audioContext.createGain();
 
-function stopTimer(){
+    oscillator.type = "sine";
 
-  if(timer !== null){
+    oscillator.frequency.setValueAtTime(
+      880,
+      audioContext.currentTime
+    );
 
-    clearInterval(timer);
+    gain.gain.setValueAtTime(
+      0.0001,
+      audioContext.currentTime
+    );
 
-    timer = null;
+    gain.gain.exponentialRampToValueAtTime(
+      0.35,
+      audioContext.currentTime + 0.02
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      audioContext.currentTime + 0.45
+    );
+
+    oscillator.connect(gain);
+    gain.connect(audioContext.destination);
+
+    oscillator.start();
+
+    oscillator.stop(
+      audioContext.currentTime + 0.5
+    );
+
+  }catch(e){
+
+    console.log("No se pudo reproducir el sonido:",e);
+
   }
 }
 
 
-function finish(){
+/* --------------------------------------------------
+   AVISO SONORO DE 20 SEGUNDOS
+-------------------------------------------------- */
 
-  stopTimer();
+function startAlarm(){
 
-  running = false;
+  /*
+     Durante estos 20 segundos:
+     - permanece visible el temporizador
+     - aparece TIEMPO TERMINADO
+     - suena el aviso
+     - NO vuelve todavía al comunicador
+  */
 
-  remaining = 0;
+  timerArea.classList.add("alarm");
 
-  display();
+  timerContent.style.display = "none";
 
   finished.classList.add("show");
 
+  /*
+     Primer sonido inmediatamente
+  */
+
   beep();
-}
 
+  /*
+     Repetimos el sonido cada segundo
+  */
 
-function tick(){
-
-  remaining = Math.max(
-    0,
-    Math.ceil(
-      (end - Date.now()) / 1000
-    )
+  let alarmInterval = setInterval(
+    beep,
+    1000
   );
 
-  display();
+  /*
+     EXACTAMENTE 20 segundos después
+     detenemos el sonido y volvemos
+     al comunicador.
+  */
 
-  if(remaining <= 0){
+  alarmTimeout = setTimeout(function(){
 
-    finish();
-  }
+    clearInterval(alarmInterval);
+
+    stopAllAudio();
+
+    returnToCommunicator();
+
+  },20000);
+
 }
 
 
-function startTimer(){
+/* --------------------------------------------------
+   DETENER AUDIO
+-------------------------------------------------- */
+
+function stopAllAudio(){
+
+  try{
+
+    if(audioContext){
+
+      audioContext.close();
+      audioContext = null;
+
+    }
+
+  }catch(e){}
+
+}
+
+
+/* --------------------------------------------------
+   VOLVER AL COMUNICADOR
+-------------------------------------------------- */
+
+function returnToCommunicator(){
+
+  /*
+     IMPORTANTE:
+     NO usamos window.location.reload();
+
+     reload() volvería a cargar EL TEMPORIZADOR.
+
+     history.back() devuelve a la pantalla anterior,
+     que es donde se encontraba el comunicador.
+  */
+
+  if(window.history.length > 1){
+
+    window.history.back();
+
+  }else{
+
+    /*
+       Si el navegador no tiene historial,
+       intentamos cerrar esta ventana/pestaña.
+    */
+
+    window.close();
+
+  }
+
+}
+
+
+/* --------------------------------------------------
+   INICIAR
+-------------------------------------------------- */
+
+startBtn.onclick = function(){
 
   if(running){
     return;
   }
 
-  finished.classList.remove("show");
+  /*
+     Si está a cero, volvemos a cargar la duración.
+  */
 
   if(remaining <= 0){
-
     setDuration();
   }
 
-  prepareAudio();
+  /*
+     Activamos el audio desde la acción del usuario.
+     Esto evita problemas de bloqueo del navegador.
+  */
+
+  try{
+
+    if(!audioContext){
+
+      audioContext =
+        new (window.AudioContext ||
+             window.webkitAudioContext)();
+
+    }
+
+    if(audioContext.state === "suspended"){
+      audioContext.resume();
+    }
+
+  }catch(e){}
 
   running = true;
 
-  end =
-    Date.now() +
-    remaining * 1000;
+  updateDisplay();
 
-  display();
+  timer = setInterval(function(){
 
-  stopTimer();
+    remaining--;
 
-  timer = setInterval(
-    tick,
-    200
-  );
-}
+    updateDisplay();
+
+    if(remaining <= 0){
+
+      clearInterval(timer);
+
+      timer = null;
+
+      running = false;
+
+      remaining = 0;
+
+      updateDisplay();
+
+      startAlarm();
+
+    }
+
+  },1000);
+
+};
 
 
-function pauseTimer(){
+/* --------------------------------------------------
+   PAUSA
+-------------------------------------------------- */
+
+pauseBtn.onclick = function(){
 
   if(!running){
     return;
   }
 
-  tick();
+  clearInterval(timer);
 
-  if(!running){
-    return;
+  timer = null;
+
+  running = false;
+
+  warning.textContent = "";
+
+  updateDisplay();
+
+};
+
+
+/* --------------------------------------------------
+   REINICIAR
+-------------------------------------------------- */
+
+resetBtn.onclick = function(){
+
+  clearInterval(timer);
+
+  timer = null;
+
+  running = false;
+
+  if(alarmTimeout){
+    clearTimeout(alarmTimeout);
+    alarmTimeout = null;
   }
 
-  remaining = Math.max(
-    0,
-    Math.ceil(
-      (end - Date.now()) / 1000
-    )
-  );
+  stopAllAudio();
 
-  stopTimer();
+  timerArea.classList.remove("alarm");
 
-  running = false;
+  timerContent.style.display = "flex";
 
-  display();
-}
-
-
-function resetTimer(){
-
-  stopTimer();
-
-  running = false;
-
-  finished.classList.remove(
-    "show"
-  );
+  finished.classList.remove("show");
 
   setDuration();
-}
+
+};
 
 
-minutes.addEventListener(
-  "input",
-  function(){
+/* --------------------------------------------------
+   CAMBIO DE MINUTOS
+-------------------------------------------------- */
 
-    if(!running){
+minutesInput.onchange = function(){
 
-      setDuration();
-    }
+  if(running){
+    return;
   }
-);
+
+  setDuration();
+
+};
 
 
-minutes.addEventListener(
-  "change",
-  function(){
+/* --------------------------------------------------
+   PANTALLA COMPLETA
+-------------------------------------------------- */
 
-    if(!running){
+fullscreenBtn.onclick = async function(){
 
-      setDuration();
+  try{
+
+    if(!document.fullscreenElement){
+
+      await document.documentElement.requestFullscreen();
+
+      fullscreenBtn.textContent =
+        "⛶ SALIR DE PANTALLA COMPLETA";
+
+    }else{
+
+      await document.exitFullscreen();
+
+      fullscreenBtn.textContent =
+        "⛶ PANTALLA COMPLETA";
+
     }
-  }
-);
 
+  }catch(e){
 
-start.addEventListener(
-  "click",
-  startTimer
-);
-
-
-pause.addEventListener(
-  "click",
-  pauseTimer
-);
-
-
-reset.addEventListener(
-  "click",
-  resetTimer
-);
-
-
-again.addEventListener(
-  "click",
-  function(){
-
-    finished.classList.remove(
-      "show"
+    console.log(
+      "Pantalla completa no disponible",
+      e
     );
 
-    setDuration();
-
-    startTimer();
   }
-);
+
+};
 
 
-fullscreen.addEventListener(
-  "click",
-  async function(){
-
-    try{
-
-      if(!document.fullscreenElement){
-
-        await document.documentElement
-          .requestFullscreen();
-
-      }else{
-
-        await document.exitFullscreen();
-      }
-
-    }catch(e){}
-  }
-);
-
+/* --------------------------------------------------
+   CAMBIO DE PANTALLA COMPLETA
+-------------------------------------------------- */
 
 document.addEventListener(
   "fullscreenchange",
   function(){
 
-    fullscreen.textContent =
-      document.fullscreenElement
-      ? "⛶ SALIR DE PANTALLA COMPLETA"
-      : "⛶ PANTALLA COMPLETA";
+    if(document.fullscreenElement){
+
+      fullscreenBtn.textContent =
+        "⛶ SALIR DE PANTALLA COMPLETA";
+
+    }else{
+
+      fullscreenBtn.textContent =
+        "⛶ PANTALLA COMPLETA";
+
+    }
+
   }
 );
 
+
+/* --------------------------------------------------
+   INICIALIZACIÓN
+-------------------------------------------------- */
 
 setDuration();
 
