@@ -159,15 +159,27 @@ function finish(){
 window.location.reload();
 
 startBtn.onclick=()=>{
- if(running)return;
- if(remaining<=0)setDuration();
- running=true;
- updateDisplay();
- timer=setInterval(()=>{
-  remaining--;
-  updateDisplay();
-  if(remaining<=0)finish();
- },1000);
+  if(running)return;
+
+  if(remaining<=0){
+    setDuration();
+  }
+
+  running=true;
+
+  timer=setInterval(()=>{
+    if(remaining>0){
+      remaining--;
+      updateDisplay();
+    }
+
+    if(remaining<=0){
+      clearInterval(timer);
+      timer=null;
+      running=false;
+      finish();
+    }
+  },1000);
 };
 
 pauseBtn.onclick=()=>{
