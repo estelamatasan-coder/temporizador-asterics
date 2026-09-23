@@ -161,30 +161,31 @@ function finish(){
  updateDisplay();
  finished.classList.add('show');
  beep();
-window.location.reload();
+}
 
 startBtn.onclick=()=>{
-  if(running)return;
+ if(running)return;
 
-  setDuration();
-  running=true;
-  updateDisplay();
+ if(remaining<=0){
+   setDuration();
+ }
 
-  timer=setInterval(()=>{
-    remaining--;
-    updateDisplay();
+ running=true;
+ updateDisplay();
 
-    if(remaining<=0){
-      clearInterval(timer);
-      timer=null;
-      remaining=0;
-      running=false;
-      finish();
-    }
-  },1000);
+ timer=setInterval(()=>{
+   remaining--;
+   updateDisplay();
+
+   if(remaining<=0){
+     clearInterval(timer);
+     timer=null;
+     remaining=0;
+     running=false;
+     finish();
+   }
+ },1000);
 };
-
- 
 
 pauseBtn.onclick=()=>{
  if(!running)return;
@@ -209,8 +210,12 @@ againBtn.onclick=()=>{
  startBtn.click();
 };
 
-minutesInput.onchange=()=>{if(!running)setDuration()};
+minutesInput.onchange=()=>{
+ if(!running)setDuration();
+};
+
 setDuration();
+
 fullscreenBtn.onclick=async()=>{
  try{
   if(!document.fullscreenElement){
@@ -224,10 +229,9 @@ fullscreenBtn.onclick=async()=>{
 };
 
 document.addEventListener('fullscreenchange',()=>{
- fullscreenBtn.textContent=document.fullscreenElement?'⛶ SALIR DE PANTALLA COMPLETA':'⛶ PANTALLA COMPLETA';
+ fullscreenBtn.textContent=document.fullscreenElement
+   ?'⛶ SALIR DE PANTALLA COMPLETA'
+   :'⛶ PANTALLA COMPLETA';
 });
 
 setDuration();
-</script>
-</body>
-</html>
