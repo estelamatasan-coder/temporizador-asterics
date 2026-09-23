@@ -159,13 +159,18 @@ svg{
   white-space:nowrap;
 }
 
-/* AVISO NARANJA Y DEBAJO DEL NÚMERO */
+/* ---------------------------------------
+   AVISO: YA QUEDA POCO
+   APARECE A LOS 30 SEGUNDOS
+   Y QUEDA DEBAJO DEL NÚMERO
+---------------------------------------- */
+
 .warning{
   display:none;
   position:absolute;
   left:0;
   right:0;
-  top:64%;
+  top:67%;
   transform:translateY(-50%);
   z-index:4;
   color:#f28c00;
@@ -174,24 +179,50 @@ svg{
   line-height:1;
   pointer-events:none;
   white-space:nowrap;
-  text-shadow:0 1px 0 #fff;
+  text-shadow:
+    0 2px 0 #fff,
+    0 0 8px rgba(242,140,0,.35);
 }
 
 .warning.show{
   display:block;
-  animation:pulse .9s ease-in-out infinite alternate;
+  animation:
+    warningFlash .45s ease-in-out infinite alternate,
+    warningPulse .9s ease-in-out infinite alternate;
 }
 
-@keyframes pulse{
+@keyframes warningFlash{
+  from{
+    opacity:.35;
+    text-shadow:
+      0 2px 0 #fff,
+      0 0 5px rgba(242,140,0,.25);
+  }
+
+  to{
+    opacity:1;
+    text-shadow:
+      0 2px 0 #fff,
+      0 0 20px rgba(242,140,0,.95),
+      0 0 35px rgba(242,140,0,.55);
+  }
+}
+
+@keyframes warningPulse{
   from{
     transform:translateY(-50%) scale(1);
   }
+
   to{
-    transform:translateY(-50%) scale(1.035);
+    transform:translateY(-50%) scale(1.10);
   }
 }
 
-/* PANTALLA FINAL */
+
+/* ---------------------------------------
+   PANTALLA FINAL
+---------------------------------------- */
+
 .finished{
   display:none;
   position:fixed;
@@ -203,7 +234,7 @@ svg{
   flex-direction:column;
   text-align:center;
   padding:25px;
-  animation:finishFlash .9s steps(2,end) infinite;
+  animation:finishFlash .55s steps(2,end) infinite;
 }
 
 .finished.show{
@@ -245,9 +276,45 @@ svg{
   }
 
   50%,100%{
-    opacity:.72;
+    opacity:.60;
   }
 }
+
+
+/* ---------------------------------------
+   MODO ALARMA
+---------------------------------------- */
+
+.timer.alarm .progress{
+  stroke:#e31313;
+  animation:alarmCircle .45s ease-in-out infinite alternate;
+}
+
+.timer.alarm .time{
+  color:#e31313;
+  animation:alarmTime .45s ease-in-out infinite alternate;
+}
+
+@keyframes alarmCircle{
+  from{
+    opacity:.55;
+  }
+
+  to{
+    opacity:1;
+  }
+}
+
+@keyframes alarmTime{
+  from{
+    transform:scale(1);
+  }
+
+  to{
+    transform:scale(1.06);
+  }
+}
+
 
 @media(max-width:650px){
 
@@ -274,21 +341,28 @@ svg{
   }
 
   .warning{
-    top:66%;
+    top:68%;
   }
 }
+
 </style>
 </head>
+
 
 <body>
 
 <div class="app">
 
-  <h1>TEMPORIZADOR VISUAL</h1>
+  <h1>
+    TEMPORIZADOR VISUAL
+  </h1>
+
 
   <div class="controls">
 
-    <span class="minutes-label">Minutos:</span>
+    <span class="minutes-label">
+      Minutos:
+    </span>
 
     <input
       id="minutes"
@@ -298,21 +372,32 @@ svg{
       value="5"
     >
 
-    <button id="start">▶ INICIAR</button>
+    <button id="start">
+      ▶ INICIAR
+    </button>
 
-    <button id="pause">Ⅱ PAUSA</button>
+    <button id="pause">
+      Ⅱ PAUSA
+    </button>
 
-    <button id="reset">↻ REINICIAR</button>
+    <button id="reset">
+      ↻ REINICIAR
+    </button>
 
   </div>
+
 
   <button id="fullscreen">
     ⛶ PANTALLA COMPLETA
   </button>
 
-  <div class="timer">
 
-    <svg viewBox="0 0 500 500" aria-hidden="true">
+  <div class="timer" id="timerContainer">
+
+    <svg
+      viewBox="0 0 500 500"
+      aria-hidden="true"
+    >
 
       <defs>
 
@@ -323,6 +408,7 @@ svg{
           x2="100%"
           y2="100%"
         >
+
           <stop
             offset="0%"
             stop-color="#087cff"
@@ -337,12 +423,14 @@ svg{
 
       </defs>
 
+
       <circle
         class="track"
         cx="250"
         cy="250"
         r="200"
       ></circle>
+
 
       <circle
         id="progress"
@@ -354,11 +442,19 @@ svg{
 
     </svg>
 
-    <div id="time" class="time">
+
+    <div
+      id="time"
+      class="time"
+    >
       05:00
     </div>
 
-    <div id="warning" class="warning">
+
+    <div
+      id="warning"
+      class="warning"
+    >
       ¡YA QUEDA POCO!
     </div>
 
@@ -367,7 +463,9 @@ svg{
 </div>
 
 
-<!-- PANTALLA FINAL -->
+<!-- ---------------------------------------
+     PANTALLA FINAL
+---------------------------------------- -->
 
 <div
   id="finished"
@@ -396,6 +494,10 @@ svg{
 
 
 <script>
+
+/* ---------------------------------------
+   ELEMENTOS
+---------------------------------------- */
 
 const minutesInput =
   document.getElementById('minutes');
@@ -427,6 +529,13 @@ const againBtn =
 const fullscreenBtn =
   document.getElementById('fullscreen');
 
+const timerContainer =
+  document.getElementById('timerContainer');
+
+
+/* ---------------------------------------
+   CÍRCULO
+---------------------------------------- */
 
 const radius = 200;
 
@@ -436,6 +545,10 @@ const circumference =
 progress.style.strokeDasharray =
   circumference;
 
+
+/* ---------------------------------------
+   VARIABLES
+---------------------------------------- */
 
 let totalSeconds = 300;
 
@@ -450,79 +563,130 @@ let returnTimer = null;
 let audioCtx = null;
 
 
-/* FORMATO DEL TIEMPO */
+/*
+   MUY IMPORTANTE:
 
-function formatTime(s){
+   El aviso aparece cuando quedan
+   30 segundos o menos.
+*/
+
+const WARNING_SECONDS = 30;
+
+
+/*
+   El aviso final dura 20 segundos.
+*/
+
+const FINISH_DURATION = 20000;
+
+
+/* ---------------------------------------
+   FORMATO DEL TIEMPO
+---------------------------------------- */
+
+function formatTime(seconds){
+
+  const mins =
+    Math.floor(seconds / 60);
+
+  const secs =
+    seconds % 60;
 
   return (
-    String(Math.floor(s / 60)).padStart(2,'0')
+    String(mins).padStart(2,'0')
     +
     ':'
     +
-    String(s % 60).padStart(2,'0')
+    String(secs).padStart(2,'0')
   );
 
 }
 
 
-/* ACTUALIZAR PANTALLA */
+/* ---------------------------------------
+   ACTUALIZAR PANTALLA
+---------------------------------------- */
 
 function updateDisplay(){
 
   timeEl.textContent =
     formatTime(remaining);
 
+
   const ratio =
     totalSeconds
       ? remaining / totalSeconds
       : 0;
 
+
   progress.style.strokeDashoffset =
     circumference * (1 - ratio);
 
 
+  /*
+     YA QUEDA POCO:
+     aparece a 30 segundos.
+  */
+
   warning.classList.toggle(
     'show',
     remaining > 0 &&
-    remaining <= 20 &&
+    remaining <= WARNING_SECONDS &&
     running
   );
 
 }
 
 
-/* ESTABLECER DURACIÓN */
+/* ---------------------------------------
+   ESTABLECER DURACIÓN
+---------------------------------------- */
 
 function setDuration(){
 
   let m =
-    parseInt(minutesInput.value,10);
+    parseInt(
+      minutesInput.value,
+      10
+    );
+
 
   if(
     !Number.isFinite(m) ||
     m < 1
   ){
+
     m = 1;
+
   }
+
 
   if(m > 180){
+
     m = 180;
+
   }
 
+
   minutesInput.value = m;
+
 
   totalSeconds =
     m * 60;
 
+
   remaining =
     totalSeconds;
+
 
   updateDisplay();
 
 }
 
 
-/* PREPARAR AUDIO */
+/* ---------------------------------------
+   PREPARAR AUDIO
+---------------------------------------- */
 
 async function prepareAudio(){
 
@@ -538,8 +702,10 @@ async function prepareAudio(){
 
     }
 
+
     if(
-      audioCtx.state === 'suspended'
+      audioCtx.state ===
+      'suspended'
     ){
 
       await audioCtx.resume();
@@ -548,20 +714,92 @@ async function prepareAudio(){
 
   }catch(e){
 
-    audioCtx = null;
+    console.log(
+      'Audio no disponible',
+      e
+    );
 
   }
 
 }
 
 
-/* AVISO SONORO DURANTE 20 SEGUNDOS */
+/* ---------------------------------------
+   CREAR UN PITIDO
+---------------------------------------- */
 
-function beep20Seconds(){
+function createBeep(
+  startTime,
+  frequency
+){
 
   if(!audioCtx){
     return;
   }
+
+
+  const oscillator =
+    audioCtx.createOscillator();
+
+  const gain =
+    audioCtx.createGain();
+
+
+  oscillator.type =
+    'sine';
+
+
+  oscillator.frequency.setValueAtTime(
+    frequency,
+    startTime
+  );
+
+
+  gain.gain.setValueAtTime(
+    0.0001,
+    startTime
+  );
+
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.32,
+    startTime + 0.04
+  );
+
+
+  gain.gain.exponentialRampToValueAtTime(
+    0.0001,
+    startTime + 0.42
+  );
+
+
+  oscillator
+    .connect(gain)
+    .connect(audioCtx.destination);
+
+
+  oscillator.start(
+    startTime
+  );
+
+
+  oscillator.stop(
+    startTime + 0.46
+  );
+
+}
+
+
+/* ---------------------------------------
+   AVISO SONORO DE 20 SEGUNDOS
+---------------------------------------- */
+
+function playFinishSound(){
+
+  if(!audioCtx){
+    return;
+  }
+
 
   try{
 
@@ -569,94 +807,130 @@ function beep20Seconds(){
       audioCtx.currentTime;
 
 
+    /*
+       Pitidos durante 20 segundos.
+    */
+
     for(
-      let d = 0, i = 0;
+      let d = 0,
+      i = 0;
+
       d < 20;
-      d += 0.8, i++
+
+      d += 0.8,
+      i++
     ){
 
-      const oscillator =
-        audioCtx.createOscillator();
-
-      const gain =
-        audioCtx.createGain();
-
-
-      oscillator.frequency.value =
+      createBeep(
+        now + d,
         i % 2
           ? 880
-          : 660;
-
-      oscillator.type =
-        'sine';
-
-
-      gain.gain.setValueAtTime(
-        0.0001,
-        now + d
-      );
-
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.32,
-        now + d + 0.04
-      );
-
-
-      gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        now + d + 0.42
-      );
-
-
-      oscillator
-        .connect(gain)
-        .connect(audioCtx.destination);
-
-
-      oscillator.start(
-        now + d
-      );
-
-
-      oscillator.stop(
-        now + d + 0.46
+          : 660
       );
 
     }
 
-  }catch(e){}
+  }catch(e){
+
+    console.log(
+      'Error de sonido',
+      e
+    );
+
+  }
 
 }
 
 
-/*
-  VOLVER AL COMUNICADOR
+/* ---------------------------------------
+   INTENTAR PANTALLA COMPLETA
+---------------------------------------- */
 
-  Primero intenta volver a la página desde
-  la que se abrió el temporizador.
+async function tryFullscreen(){
 
-  Si no existe esa referencia,
-  utiliza el historial del navegador.
-*/
+  try{
+
+    if(
+      document.fullscreenElement
+    ){
+
+      return;
+
+    }
+
+
+    if(
+      document.documentElement.requestFullscreen
+    ){
+
+      await document
+        .documentElement
+        .requestFullscreen();
+
+      fullscreenBtn.textContent =
+        '⛶ SALIR DE PANTALLA COMPLETA';
+
+    }
+
+  }catch(e){
+
+    /*
+       Algunos navegadores no permiten
+       pantalla completa automática al
+       abrir una página nueva.
+
+       En ese caso no hacemos nada:
+       queda disponible el botón.
+    */
+
+    console.log(
+      'El navegador no permitió pantalla completa automática.',
+      e
+    );
+
+  }
+
+}
+
+
+/* ---------------------------------------
+   VOLVER AL COMUNICADOR
+---------------------------------------- */
 
 function returnToCommunicator(){
 
-  const ref =
+  /*
+     Primero usamos la página que abrió
+     el temporizador.
+
+     document.referrer conserva la
+     dirección del comunicador cuando
+     esta página se ha abierto desde él.
+  */
+
+  const referrer =
     document.referrer;
 
 
   if(
-    ref &&
-    ref !== window.location.href
+    referrer &&
+    referrer !== window.location.href
   ){
 
-    window.location.replace(ref);
+    window.location.replace(
+      referrer
+    );
 
     return;
 
   }
 
+
+  /*
+     Si no tenemos referrer,
+     intentamos volver mediante
+     el historial.
+  */
 
   if(
     window.history.length > 1
@@ -671,13 +945,17 @@ function returnToCommunicator(){
 }
 
 
-/* CANCELAR PANTALLA FINAL */
+/* ---------------------------------------
+   CANCELAR FINAL
+---------------------------------------- */
 
 function cancelFinish(){
 
   if(returnTimer){
 
-    clearTimeout(returnTimer);
+    clearTimeout(
+      returnTimer
+    );
 
     returnTimer = null;
 
@@ -696,10 +974,22 @@ function cancelFinish(){
 
   }
 
+
+  finished.classList.remove(
+    'show'
+  );
+
+
+  timerContainer.classList.remove(
+    'alarm'
+  );
+
 }
 
 
-/* TERMINAR TEMPORIZADOR */
+/* ---------------------------------------
+   FINAL DEL TEMPORIZADOR
+---------------------------------------- */
 
 function finish(){
 
@@ -711,173 +1001,320 @@ function finish(){
 
   remaining = 0;
 
+
   updateDisplay();
 
 
   /*
-    La pantalla final aparece
-    inmediatamente.
+     Activamos el modo alarma.
   */
 
-  finished.classList.add('show');
+  timerContainer.classList.add(
+    'alarm'
+  );
 
 
   /*
-    El sonido comienza inmediatamente
-    y dura 20 segundos.
+     Mostramos la pantalla final.
   */
 
-  beep20Seconds();
+  finished.classList.add(
+    'show'
+  );
 
 
   /*
-    MUY IMPORTANTE:
-    no vuelve al comunicador hasta
-    que hayan pasado 20 segundos.
+     Empieza el sonido.
+  */
+
+  playFinishSound();
+
+
+  /*
+     MUY IMPORTANTE:
+
+     NO volvemos inmediatamente.
+
+     Esperamos 20 segundos completos.
   */
 
   returnTimer =
     setTimeout(
 
-      () => {
+      function(){
 
         returnTimer = null;
+
+        /*
+           Después de los 20 segundos:
+           volvemos al comunicador.
+        */
 
         returnToCommunicator();
 
       },
 
-      20000
+      FINISH_DURATION
 
     );
 
 }
 
 
-/* BOTÓN INICIAR */
+/* ---------------------------------------
+   INICIAR
+---------------------------------------- */
 
-startBtn.onclick = async () => {
+startBtn.onclick =
+  async function(){
 
-  if(running){
-    return;
-  }
+    if(running){
 
+      return;
 
-  if(remaining <= 0){
-
-    setDuration();
-
-  }
+    }
 
 
-  await prepareAudio();
+    /*
+       Si estaba en cero,
+       comenzamos otra vez.
+    */
+
+    if(remaining <= 0){
+
+      setDuration();
+
+    }
 
 
-  running = true;
+    /*
+       Activamos el audio por la acción
+       del usuario.
+    */
 
-  updateDisplay();
-
-
-  timer =
-    setInterval(
-
-      () => {
-
-        remaining--;
-
-        updateDisplay();
+    await prepareAudio();
 
 
-        if(
-          remaining <= 0
-        ){
+    running = true;
 
-          finish();
 
-        }
+    updateDisplay();
 
-      },
 
-      1000
+    timer =
+      setInterval(
 
+        function(){
+
+          remaining--;
+
+          updateDisplay();
+
+
+          if(
+            remaining <= 0
+          ){
+
+            finish();
+
+          }
+
+        },
+
+        1000
+
+      );
+
+  };
+
+
+/* ---------------------------------------
+   PAUSA
+---------------------------------------- */
+
+pauseBtn.onclick =
+  function(){
+
+    if(!running){
+
+      return;
+
+    }
+
+
+    clearInterval(timer);
+
+    timer = null;
+
+    running = false;
+
+    warning.classList.remove(
+      'show'
     );
 
-};
+  };
 
 
-/* BOTÓN PAUSA */
+/* ---------------------------------------
+   REINICIAR
+---------------------------------------- */
 
-pauseBtn.onclick = () => {
+resetBtn.onclick =
+  function(){
 
-  if(!running){
-    return;
-  }
+    clearInterval(timer);
 
+    timer = null;
 
-  clearInterval(timer);
-
-  timer = null;
-
-  running = false;
-
-  warning.classList.remove('show');
-
-};
+    running = false;
 
 
-/* BOTÓN REINICIAR */
+    if(returnTimer){
 
-resetBtn.onclick = () => {
+      clearTimeout(
+        returnTimer
+      );
 
-  clearInterval(timer);
+      returnTimer = null;
 
-  timer = null;
-
-  running = false;
-
-  cancelFinish();
-
-  finished.classList.remove('show');
-
-  warning.classList.remove('show');
-
-  setDuration();
-
-};
+    }
 
 
-/* VOLVER A EMPEZAR */
+    if(audioCtx){
 
-againBtn.onclick = () => {
+      try{
 
-  cancelFinish();
+        audioCtx.close();
 
-  finished.classList.remove('show');
+      }catch(e){}
 
-  setDuration();
+      audioCtx = null;
 
-  startBtn.click();
-
-};
+    }
 
 
-/* CAMBIO DE MINUTOS */
+    finished.classList.remove(
+      'show'
+    );
 
-minutesInput.onchange = () => {
 
-  if(!running){
+    timerContainer.classList.remove(
+      'alarm'
+    );
+
+
+    warning.classList.remove(
+      'show'
+    );
+
 
     setDuration();
 
-  }
-
-};
+  };
 
 
-/* PANTALLA COMPLETA */
+/* ---------------------------------------
+   VOLVER A EMPEZAR
+---------------------------------------- */
+
+againBtn.onclick =
+  async function(){
+
+    if(returnTimer){
+
+      clearTimeout(
+        returnTimer
+      );
+
+      returnTimer = null;
+
+    }
+
+
+    if(audioCtx){
+
+      try{
+
+        audioCtx.close();
+
+      }catch(e){}
+
+      audioCtx = null;
+
+    }
+
+
+    finished.classList.remove(
+      'show'
+    );
+
+
+    timerContainer.classList.remove(
+      'alarm'
+    );
+
+
+    setDuration();
+
+
+    await prepareAudio();
+
+
+    running = true;
+
+
+    updateDisplay();
+
+
+    timer =
+      setInterval(
+
+        function(){
+
+          remaining--;
+
+          updateDisplay();
+
+
+          if(
+            remaining <= 0
+          ){
+
+            finish();
+
+          }
+
+        },
+
+        1000
+
+      );
+
+  };
+
+
+/* ---------------------------------------
+   CAMBIO DE MINUTOS
+---------------------------------------- */
+
+minutesInput.onchange =
+  function(){
+
+    if(!running){
+
+      setDuration();
+
+    }
+
+  };
+
+
+/* ---------------------------------------
+   PANTALLA COMPLETA
+---------------------------------------- */
 
 fullscreenBtn.onclick =
-  async () => {
+  async function(){
 
     try{
 
@@ -896,16 +1333,25 @@ fullscreenBtn.onclick =
 
       }
 
-    }catch(e){}
+    }catch(e){
+
+      console.log(
+        'Pantalla completa no disponible',
+        e
+      );
+
+    }
 
   };
 
 
-/* CAMBIO DEL TEXTO DE PANTALLA COMPLETA */
+/* ---------------------------------------
+   CAMBIO DE TEXTO DE PANTALLA COMPLETA
+---------------------------------------- */
 
 document.addEventListener(
   'fullscreenchange',
-  () => {
+  function(){
 
     fullscreenBtn.textContent =
       document.fullscreenElement
@@ -916,9 +1362,29 @@ document.addEventListener(
 );
 
 
-/* INICIO */
+/* ---------------------------------------
+   INICIO
+---------------------------------------- */
 
 setDuration();
+
+
+/*
+   Intentamos entrar automáticamente
+   en pantalla completa al cargar.
+
+   Si el navegador lo permite, se hará.
+   Si lo bloquea, no rompe el temporizador.
+*/
+
+setTimeout(
+  function(){
+
+    tryFullscreen();
+
+  },
+  300
+);
 
 </script>
 
