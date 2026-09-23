@@ -99,8 +99,8 @@ const radius=200;
 const circumference=2*Math.PI*radius;
 progress.style.strokeDasharray=circumference;
 
-let totalSeconds=300;
-let remaining=300;
+let totalSeconds=0;
+let remaining=0;
 let timer=null;
 let running=false;
 
@@ -194,7 +194,7 @@ againBtn.onclick=()=>{
 };
 
 minutesInput.onchange=()=>{if(!running)setDuration()};
-
+setDuration();
 fullscreenBtn.onclick=async()=>{
  try{
   if(!document.fullscreenElement){
