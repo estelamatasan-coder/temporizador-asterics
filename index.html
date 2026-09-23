@@ -4,234 +4,742 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TEMPORIZADOR VISUAL</title>
+
 <style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden}
-body{font-family:Arial,Helvetica,sans-serif;background:#fff;color:#102b5c;display:flex;justify-content:center;align-items:flex-start}
-.app{width:min(1180px,96vw);height:100vh;text-align:center;padding:18px 14px 20px}
-h1{margin:0 auto 18px;padding:10px 28px;font-size:clamp(34px,5.5vw,72px);font-weight:900;color:#102b5c;background:#dff1ff;border-radius:28px;max-width:1000px;text-transform:uppercase}
-.controls{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px}
-.minutes-label{font-size:clamp(20px,2.7vw,30px);font-weight:900}
-input{width:105px;height:58px;border:3px solid #9bb1cf;border-radius:14px;font-size:29px;text-align:center;color:#102b5c;font-weight:800;background:#fff}
-button{min-height:58px;padding:10px 22px;border:3px solid #9bb1cf;border-radius:14px;background:#fff;color:#102b5c;font-size:clamp(18px,2.3vw,28px);font-weight:900;cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.08)}
-#start{background:#20b36b;color:#fff;border-color:#159355}
-#pause{background:#248cff;color:#fff;border-color:#1475df}
-#reset{background:#ffbf27;color:#102b5c;border-color:#eda600}
-#fullscreen{display:block;margin:2px auto 4px;background:#6950e8;color:#fff;border-color:#5540c8}
-button:hover{filter:brightness(.97)}
+*{
+  box-sizing:border-box;
+}
 
-.timer{position:relative;width:min(70vw,680px);aspect-ratio:1;margin:2px auto 0;container-type:inline-size}
-svg{width:100%;height:100%;transform:rotate(-90deg);overflow:visible}
-.track{fill:none;stroke:#e1e4e8;stroke-width:58}
-.progress{fill:none;stroke:url(#progressGradient);stroke-width:58;stroke-linecap:round;transition:stroke-dashoffset .25s linear}
-.time{position:absolute;inset:0;display:flex;justify-content:center;align-items:center;padding:0 5%;font-size:clamp(64px,16cqw,148px);font-weight:900;color:#102b5c;letter-spacing:1px;line-height:1;z-index:1;white-space:nowrap}
-.warning{display:none;position:absolute;left:0;right:0;top:58%;transform:translateY(-50%);z-index:4;color:#e31313;font-size:clamp(22px,6cqw,48px);font-weight:1000;line-height:1;pointer-events:none;white-space:nowrap}
-.warning.show{display:block;animation:pulse .9s ease-in-out infinite alternate}
-@keyframes pulse{from{transform:translateY(-50%) scale(1)}to{transform:translateY(-50%) scale(1.035)}}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
 
-.finished{display:none;position:fixed;inset:0;z-index:20;background:rgba(255,245,245,.98);align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:25px;animation:finishFlash .9s steps(2,end) infinite}
-.finished.show{display:flex}
-.finished-text{font-size:clamp(70px,13vw,180px);font-weight:1000;color:#e31313;text-transform:uppercase;margin:0 0 8px;line-height:1}
-.finished-sub{font-size:clamp(27px,5vw,58px);font-weight:900;color:#17243a;margin-bottom:18px}
-.finished-icon{font-size:clamp(100px,15vw,190px);line-height:1;margin-bottom:18px}
-.finished button{background:#ed1c24;color:#fff;border-color:#c90f16;font-size:clamp(21px,3vw,34px)}
-@keyframes finishFlash{0%,49%{opacity:1}50%,100%{opacity:.72}}
+body{
+  font-family:Arial,Helvetica,sans-serif;
+  background:#fff;
+  color:#102b5c;
+  display:flex;
+  justify-content:center;
+}
+
+.app{
+  width:min(1180px,96vw);
+  height:100vh;
+  text-align:center;
+  padding:18px 14px;
+}
+
+h1{
+  margin:0 auto 18px;
+  padding:10px 28px;
+  font-size:clamp(34px,5.5vw,72px);
+  font-weight:900;
+  color:#102b5c;
+  background:#dff1ff;
+  border-radius:28px;
+  max-width:1000px;
+}
+
+.controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.minutes-label{
+  font-size:clamp(20px,2.7vw,30px);
+  font-weight:900;
+}
+
+input{
+  width:105px;
+  height:58px;
+  border:3px solid #9bb1cf;
+  border-radius:14px;
+  font-size:29px;
+  text-align:center;
+  color:#102b5c;
+  font-weight:800;
+}
+
+button{
+  min-height:58px;
+  padding:10px 22px;
+  border:3px solid #9bb1cf;
+  border-radius:14px;
+  background:#fff;
+  color:#102b5c;
+  font-size:clamp(18px,2.3vw,28px);
+  font-weight:900;
+  cursor:pointer;
+}
+
+#start{
+  background:#20b36b;
+  color:#fff;
+  border-color:#159355;
+}
+
+#pause{
+  background:#248cff;
+  color:#fff;
+  border-color:#1475df;
+}
+
+#reset{
+  background:#ffbf27;
+  border-color:#eda600;
+}
+
+#fullscreen{
+  display:block;
+  margin:6px auto;
+  background:#6950e8;
+  color:#fff;
+  border-color:#5540c8;
+}
+
+.timer{
+  position:relative;
+  width:min(70vw,680px);
+  aspect-ratio:1;
+  margin:2px auto;
+  container-type:inline-size;
+}
+
+svg{
+  width:100%;
+  height:100%;
+  transform:rotate(-90deg);
+}
+
+.track{
+  fill:none;
+  stroke:#e1e4e8;
+  stroke-width:58;
+}
+
+.progress{
+  fill:none;
+  stroke:url(#progressGradient);
+  stroke-width:58;
+  stroke-linecap:round;
+  transition:stroke-dashoffset .2s linear;
+}
+
+.time{
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:clamp(64px,16cqw,148px);
+  font-weight:900;
+  color:#102b5c;
+  line-height:1;
+  z-index:1;
+}
+
+.warning{
+  display:none;
+  position:absolute;
+  left:0;
+  right:0;
+  top:58%;
+  transform:translateY(-50%);
+  z-index:4;
+  color:#e31313;
+  font-size:clamp(22px,6cqw,48px);
+  font-weight:1000;
+  white-space:nowrap;
+}
+
+.warning.show{
+  display:block;
+  animation:pulse .9s ease-in-out infinite alternate;
+}
+
+@keyframes pulse{
+  to{
+    transform:translateY(-50%) scale(1.035);
+  }
+}
+
+.finished{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:20;
+  background:rgba(255,245,245,.98);
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  text-align:center;
+}
+
+.finished.show{
+  display:flex;
+}
+
+.finished-text{
+  font-size:clamp(70px,13vw,180px);
+  font-weight:1000;
+  color:#e31313;
+  margin-bottom:8px;
+}
+
+.finished-sub{
+  font-size:clamp(27px,5vw,58px);
+  font-weight:900;
+  margin-bottom:18px;
+}
+
+.finished-icon{
+  font-size:clamp(100px,15vw,190px);
+  margin-bottom:18px;
+}
+
+.finished button{
+  background:#ed1c24;
+  color:#fff;
+  border-color:#c90f16;
+}
 
 @media(max-width:650px){
- .app{padding-top:10px}
- h1{border-radius:20px;padding:8px 12px;margin-bottom:10px}
- .timer{width:88vw}
- .controls{gap:6px}
- button{padding:8px 12px}
+
+  .app{
+    padding-top:10px;
+  }
+
+  h1{
+    border-radius:20px;
+    padding:8px 12px;
+    margin-bottom:10px;
+  }
+
+  .timer{
+    width:88vw;
+  }
+
+  button{
+    padding:8px 12px;
+  }
 }
 </style>
 </head>
+
 <body>
+
 <div class="app">
+
 <h1>TEMPORIZADOR VISUAL</h1>
 
 <div class="controls">
+
 <span class="minutes-label">Minutos:</span>
-<input id="minutes" type="number" min="1" max="180" value="5">
-<button id="start">▶ INICIAR</button>
-<button id="pause">Ⅱ PAUSA</button>
-<button id="reset">↻ REINICIAR</button>
+
+<input
+  id="minutes"
+  type="number"
+  min="1"
+  max="180"
+  value="5"
+>
+
+<button id="start">
+▶ INICIAR
+</button>
+
+<button id="pause">
+Ⅱ PAUSA
+</button>
+
+<button id="reset">
+↻ REINICIAR
+</button>
+
 </div>
 
-<button id="fullscreen">⛶ SALIR DE PANTALLA COMPLETA</button>
+<button id="fullscreen">
+⛶ PANTALLA COMPLETA
+</button>
+
 
 <div class="timer">
-<svg viewBox="0 0 500 500" aria-hidden="true">
+
+<svg viewBox="0 0 500 500">
+
 <defs>
-<linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-<stop id="blueStop" offset="0%" stop-color="#087cff"></stop>
-<stop id="redStop" offset="100%" stop-color="#ef1c2e"></stop>
+
+<linearGradient
+  id="progressGradient"
+  x1="0%"
+  y1="0%"
+  x2="100%"
+  y2="100%"
+>
+
+<stop
+  offset="0%"
+  stop-color="#087cff"
+></stop>
+
+<stop
+  offset="100%"
+  stop-color="#ef1c2e"
+></stop>
+
 </linearGradient>
+
 </defs>
-<circle class="track" cx="250" cy="250" r="200"></circle>
-<circle id="progress" class="progress" cx="250" cy="250" r="200"></circle>
+
+<circle
+  class="track"
+  cx="250"
+  cy="250"
+  r="200"
+></circle>
+
+<circle
+  id="progress"
+  class="progress"
+  cx="250"
+  cy="250"
+  r="200"
+></circle>
+
 </svg>
-<div id="time" class="time">05:00</div>
-<div id="warning" class="warning">¡YA QUEDA POCO!</div>
-</div>
+
+<div id="time" class="time">
+05:00
 </div>
 
-<div id="finished" class="finished" role="alert" aria-live="assertive">
-<div class="finished-text">¡SE ACABÓ!</div>
-<div class="finished-sub">TIEMPO TERMINADO</div>
-<div class="finished-icon">🙅‍♂️</div>
-<button id="again">↻ VOLVER A EMPEZAR</button>
+<div id="warning" class="warning">
+¡YA QUEDA POCO!
 </div>
+
+</div>
+
+</div>
+
+
+<div
+  id="finished"
+  class="finished"
+  role="alert"
+  aria-live="assertive"
+>
+
+<div class="finished-text">
+¡SE ACABÓ!
+</div>
+
+<div class="finished-sub">
+TIEMPO TERMINADO
+</div>
+
+<div class="finished-icon">
+🙅‍♂️
+</div>
+
+<button id="again">
+↻ VOLVER A EMPEZAR
+</button>
+
+</div>
+
 
 <script>
-const minutesInput=document.getElementById('minutes');
-const timeEl=document.getElementById('time');
-const progress=document.getElementById('progress');
-const finished=document.getElementById('finished');
-const warning=document.getElementById('warning');
-const startBtn=document.getElementById('start');
-const pauseBtn=document.getElementById('pause');
-const resetBtn=document.getElementById('reset');
-const againBtn=document.getElementById('again');
-const fullscreenBtn=document.getElementById('fullscreen');
 
-const radius=200;
-const circumference=2*Math.PI*radius;
-progress.style.strokeDasharray=circumference;
+"use strict";
 
-let totalSeconds=0;
-let remaining=0;
-let timer=null;
-let running=false;
 
-function formatTime(s){
- return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const minutes = document.getElementById("minutes");
+const time = document.getElementById("time");
+const progress = document.getElementById("progress");
+const warning = document.getElementById("warning");
+const finished = document.getElementById("finished");
+
+const start = document.getElementById("start");
+const pause = document.getElementById("pause");
+const reset = document.getElementById("reset");
+const again = document.getElementById("again");
+const fullscreen = document.getElementById("fullscreen");
+
+
+const circumference = 2 * Math.PI * 200;
+
+progress.style.strokeDasharray = circumference;
+progress.style.strokeDashoffset = 0;
+
+
+let total = 300;
+let remaining = 300;
+let running = false;
+let timer = null;
+let end = 0;
+let audio = null;
+
+
+function format(seconds){
+
+  seconds = Math.max(0, Math.floor(seconds));
+
+  const mins = String(
+    Math.floor(seconds / 60)
+  ).padStart(2,"0");
+
+  const secs = String(
+    seconds % 60
+  ).padStart(2,"0");
+
+  return mins + ":" + secs;
 }
 
-function updateDisplay(){
- timeEl.textContent=formatTime(remaining);
- const ratio=totalSeconds?remaining/totalSeconds:0;
- progress.style.strokeDashoffset=circumference*(1-ratio);
- warning.classList.toggle('show',remaining>0&&remaining<=20&&running);
+
+function display(){
+
+  time.textContent = format(remaining);
+
+  const ratio =
+    total > 0
+    ? remaining / total
+    : 0;
+
+  progress.style.strokeDashoffset =
+    circumference * (1 - ratio);
+
+  warning.classList.toggle(
+    "show",
+    running &&
+    remaining > 0 &&
+    remaining <= 20
+  );
 }
+
 
 function setDuration(){
-  let m=parseInt(minutesInput.value,10);
 
-  if(!Number.isFinite(m) || m<1) m=1;
-  if(m>180) m=180;
+  let m = parseInt(
+    minutes.value,
+    10
+  );
 
-  minutesInput.value=m;
-  totalSeconds=m*60;
-  remaining=totalSeconds;
-  updateDisplay();
+  if(!Number.isFinite(m) || m < 1){
+    m = 1;
+  }
+
+  if(m > 180){
+    m = 180;
+  }
+
+  minutes.value = m;
+
+  total = m * 60;
+
+  remaining = total;
+
+  display();
 }
 
-minutesInput.addEventListener('input',()=>{
-  if(!running) setDuration();
-});
+
+function prepareAudio(){
+
+  try{
+
+    if(!audio){
+
+      audio =
+        new (
+          window.AudioContext ||
+          window.webkitAudioContext
+        )();
+
+    }
+
+    if(audio.state === "suspended"){
+      audio.resume();
+    }
+
+  }catch(e){}
+}
+
 
 function beep(){
- try{
-  const ctx=new(window.AudioContext||window.webkitAudioContext)();
-  const now=ctx.currentTime;
-  // Aviso sonoro de 20 segundos.
-  for(let d=0,i=0;d<20;d+=.8,i++){
-   const o=ctx.createOscillator();
-   const g=ctx.createGain();
-   o.frequency.value=i%2?880:660;
-   o.type='sine';
-   g.gain.setValueAtTime(.0001,now+d);
-   g.gain.exponentialRampToValueAtTime(.32,now+d+.04);
-   g.gain.exponentialRampToValueAtTime(.0001,now+d+.42);
-   o.connect(g).connect(ctx.destination);
-   o.start(now+d);
-   o.stop(now+d+.46);
-  }
-  setTimeout(()=>ctx.close(),21000);
- }catch(e){}
+
+  try{
+
+    prepareAudio();
+
+    if(!audio){
+      return;
+    }
+
+    const now = audio.currentTime;
+
+    for(let i = 0; i < 10; i++){
+
+      const oscillator =
+        audio.createOscillator();
+
+      const gain =
+        audio.createGain();
+
+      const delay = i * 0.45;
+
+      oscillator.frequency.value =
+        i % 2 ? 880 : 660;
+
+      oscillator.type = "sine";
+
+      gain.gain.setValueAtTime(
+        0.0001,
+        now + delay
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.32,
+        now + delay + 0.04
+      );
+
+      gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        now + delay + 0.35
+      );
+
+      oscillator
+        .connect(gain)
+        .connect(audio.destination);
+
+      oscillator.start(
+        now + delay
+      );
+
+      oscillator.stop(
+        now + delay + 0.38
+      );
+    }
+
+  }catch(e){}
 }
+
+
+function stopTimer(){
+
+  if(timer !== null){
+
+    clearInterval(timer);
+
+    timer = null;
+  }
+}
+
 
 function finish(){
- warning.classList.remove('show');
- clearInterval(timer);
- timer=null;
- running=false;
- remaining=0;
- updateDisplay();
- finished.classList.add('show');
- beep();
+
+  stopTimer();
+
+  running = false;
+
+  remaining = 0;
+
+  display();
+
+  finished.classList.add("show");
+
+  beep();
 }
 
-startBtn.onclick=()=>{
- if(running)return;
 
- if(remaining<=0){
-   setDuration();
- }
+function tick(){
 
- running=true;
- updateDisplay();
+  remaining = Math.max(
+    0,
+    Math.ceil(
+      (end - Date.now()) / 1000
+    )
+  );
 
- timer=setInterval(()=>{
-   remaining--;
-   updateDisplay();
+  display();
 
-   if(remaining<=0){
-     clearInterval(timer);
-     timer=null;
-     remaining=0;
-     running=false;
-     finish();
-   }
- },1000);
-};
+  if(remaining <= 0){
 
-pauseBtn.onclick=()=>{
- if(!running)return;
- clearInterval(timer);
- timer=null;
- running=false;
- warning.classList.remove('show');
-};
-
-resetBtn.onclick=()=>{
- clearInterval(timer);
- timer=null;
- running=false;
- finished.classList.remove('show');
- warning.classList.remove('show');
- setDuration();
-};
-
-againBtn.onclick=()=>{
- finished.classList.remove('show');
- setDuration();
- startBtn.click();
-};
-
-minutesInput.onchange=()=>{
- if(!running)setDuration();
-};
-
-setDuration();
-
-fullscreenBtn.onclick=async()=>{
- try{
-  if(!document.fullscreenElement){
-   await document.documentElement.requestFullscreen();
-   fullscreenBtn.textContent='⛶ SALIR DE PANTALLA COMPLETA';
-  }else{
-   await document.exitFullscreen();
-   fullscreenBtn.textContent='⛶ PANTALLA COMPLETA';
+    finish();
   }
- }catch(e){}
-};
+}
 
-document.addEventListener('fullscreenchange',()=>{
- fullscreenBtn.textContent=document.fullscreenElement
-   ?'⛶ SALIR DE PANTALLA COMPLETA'
-   :'⛶ PANTALLA COMPLETA';
-});
+
+function startTimer(){
+
+  if(running){
+    return;
+  }
+
+  finished.classList.remove("show");
+
+  if(remaining <= 0){
+
+    setDuration();
+  }
+
+  prepareAudio();
+
+  running = true;
+
+  end =
+    Date.now() +
+    remaining * 1000;
+
+  display();
+
+  stopTimer();
+
+  timer = setInterval(
+    tick,
+    200
+  );
+}
+
+
+function pauseTimer(){
+
+  if(!running){
+    return;
+  }
+
+  tick();
+
+  if(!running){
+    return;
+  }
+
+  remaining = Math.max(
+    0,
+    Math.ceil(
+      (end - Date.now()) / 1000
+    )
+  );
+
+  stopTimer();
+
+  running = false;
+
+  display();
+}
+
+
+function resetTimer(){
+
+  stopTimer();
+
+  running = false;
+
+  finished.classList.remove(
+    "show"
+  );
+
+  setDuration();
+}
+
+
+minutes.addEventListener(
+  "input",
+  function(){
+
+    if(!running){
+
+      setDuration();
+    }
+  }
+);
+
+
+minutes.addEventListener(
+  "change",
+  function(){
+
+    if(!running){
+
+      setDuration();
+    }
+  }
+);
+
+
+start.addEventListener(
+  "click",
+  startTimer
+);
+
+
+pause.addEventListener(
+  "click",
+  pauseTimer
+);
+
+
+reset.addEventListener(
+  "click",
+  resetTimer
+);
+
+
+again.addEventListener(
+  "click",
+  function(){
+
+    finished.classList.remove(
+      "show"
+    );
+
+    setDuration();
+
+    startTimer();
+  }
+);
+
+
+fullscreen.addEventListener(
+  "click",
+  async function(){
+
+    try{
+
+      if(!document.fullscreenElement){
+
+        await document.documentElement
+          .requestFullscreen();
+
+      }else{
+
+        await document.exitFullscreen();
+      }
+
+    }catch(e){}
+  }
+);
+
+
+document.addEventListener(
+  "fullscreenchange",
+  function(){
+
+    fullscreen.textContent =
+      document.fullscreenElement
+      ? "⛶ SALIR DE PANTALLA COMPLETA"
+      : "⛶ PANTALLA COMPLETA";
+  }
+);
+
 
 setDuration();
+
+</script>
+
+</body>
+</html>
